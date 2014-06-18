@@ -1,0 +1,5 @@
+Django
+Mysql-python
+python-memcached
+pillow
+django-render-json
