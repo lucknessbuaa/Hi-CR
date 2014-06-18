@@ -1,0 +1,21 @@
+{
+  "name": "baidu",
+  "version": "0.0.0",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "console-polyfill": "~0.1.1",
+    "respond": "~1.4.2",
+    "html5shiv": "~3.7.0",
+    "jquery": "1.11.0",
+    "bootstrap": "~3.1.1",
+    "jquery-placeholder": "~2.0.8",
+    "jquery.cookie": "~1.4.0"
+  }
+}
