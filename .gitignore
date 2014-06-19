@@ -1,3 +1,5 @@
 venv
 components
 nohup.out
+
+*.pyc
