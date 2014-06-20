@@ -1,0 +1,28 @@
+{
+  "name": "Hi-CR",
+  "version": "0.0.0",
+  "description": "Hi-CR =====",
+  "main": "Gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/lucknessbuaa/Hi-CR.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucknessbuaa/Hi-CR/issues"
+  },
+  "homepage": "https://github.com/lucknessbuaa/Hi-CR",
+  "devDependencies": {
+    "gulp-less": "~1.2.3",
+    "gulp": "~3.8.1",
+    "underscore": "~1.6.0",
+    "requirejs": "~2.1.14",
+    "chalk": "~0.4.0",
+    "gulp-uglify": "~0.3.0",
+    "async": "~0.9.0"
+  }
+}

@@ -1,5 +1,7 @@
 venv
 components
 nohup.out
+node_modules
 
+*.log
 *.pyc
