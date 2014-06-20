@@ -1,3 +1,7 @@
+fieldAttrs = {
+    'class': 'form-control'
+}
+
 RET_CODES = {
     "ok": 0,
     "error": 1000,

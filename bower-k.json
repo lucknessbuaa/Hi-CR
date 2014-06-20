@@ -1,11 +1,11 @@
 {
-  "name": "baidu",
+  "name": "minisite",
   "version": "0.0.0",
   "license": "MIT",
   "ignore": [
     "**/.*",
     "node_modules",
-    "components",
+    "bower_components",
     "test",
     "tests"
   ],
@@ -37,6 +37,5 @@
     "moment": "~2.6.0",
     "excanvas": "*",
     "font-awesome": "~4.1.0"
-
   }
 }

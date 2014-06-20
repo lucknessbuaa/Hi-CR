@@ -3,3 +3,5 @@ Mysql-python
 python-memcached
 pillow
 django-render-json
+django-tables3
+underscore.py
