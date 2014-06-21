@@ -25,8 +25,19 @@ module.exports = {
         'bootstrap-datetimepicker': "components/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min",
         'multiline': 'components/multiline/browser',
 
+        //base modules
+        'codes': 'assets/js/codes',
+        'errors': 'assets/js/errors',
+        'utils': 'assets/js/utils',
+        'chart': 'assets/js/ChartNew',
+        'modals': 'assets/js/modals',
+        'formProto': 'assets/js/formProto',
+        'formValidationProto': 'assets/js/formValidationProto',
+        'simple-upload': 'assets/js/simple-upload',
+
         // app modules
-        'login': 'base/js/login'
+        'login': 'base/js/login',
+        'talk': 'backend/js/talk',
     },
     shim: {
         'jquery-placeholder': {
