@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class Xuanjiang(models.Model):
+class Talk(models.Model):
     city = models.CharField(verbose_name=u'city', max_length=80)
     university = models.CharField(verbose_name=u'univercity', max_length=100)
     date = models.DateField()

@@ -19,29 +19,30 @@ from django.http import HttpResponseRedirect
 
 
 from base.utils import fieldAttrs
-from backend.models import Xuanjiang
+from backend.models import Talk
 from backend import models
+from base.models import City
 
 @require_GET
 @login_required
-def xuanjiang(request):
-    xuanjiang = Xuanjiang.objects.all()
+def talk(request):
+    talk = Talk.objects.all()
     if 'q' in request.GET and request.GET['q'] <> "":
-        xuanjiang = Xuanjiang.filter(Q(name__contains=request.GET['q'])|\
+        talk = Talk.filter(Q(name__contains=request.GET['q'])|\
 	Q(text__contains=request.GET['q'])|\
 	Q(response__contains=request.GET['q']))
     elif 'q' in request.GET and request.GET['q'] == "":
         return HttpResponseRedirect(request.path)
-    table = XuanjiangTable(xuanjiang)
-    form = XuanjiangForm()
+    table = TalkTable(talk)
+    form = TalkForm()
     RequestConfig(request, paginate={"per_page": 10}).configure(table)
-    return render(request, "xuanjiang.html", {
+    return render(request, "talk.html", {
         "table": table,
         "form": form
     })
 
 
-class XuanjiangTable(tables.Table):
+class TalkTable(tables.Table):
     city = tables.columns.Column(verbose_name='City', empty_values=(), orderable=False)
     university = tables.columns.Column(verbose_name='University', empty_values=(), orderable=False)
     date = tables.columns.Column(verbose_name='Date', empty_values=(), orderable=False)
@@ -65,31 +66,23 @@ class XuanjiangTable(tables.Table):
         return record.getInput()
 
     class Meta:
-        model = Xuanjiang
-        empty_text = u'no xuanjiang message'
+        model = Talk
+        empty_text = u'no talk message'
         fields = ( "city", "university", "date", "place", "capacity", "speaker", "wtdate", )
         attrs = {
             'class': 'table table-bordered table-striped'
         }
 
 
-class XuanjiangForm(forms.Form):
-    city = forms.CharField(label=u'city',  
-            widget=forms.TextInput(attrs=us.extend({}, fieldAttrs, {
-                'parsley-required': '',
-            })))
-    university = forms.CharField(label=u'university', required=False,
-            widget=forms.TextInput(attrs=us.extend({}, fieldAttrs, {
-                'parsley-required': '',
-            })))
+class TalkForm(forms.Form):
+    city = forms.ModelChoiceField(queryset=City.objects.all())
 
-    date = forms.CharField(label=u'date', required=False,
-            widget=forms.TextInput(attrs=us.extend({}, fieldAttrs, {
-                'parsley-required': '',
-            })))
+    university = forms.ModelChoiceField(queryset=City.objects.all())
+
+    date = forms.DateField()
 
     def clean(self):
-        cleaned_data = self.cleaned_data = super(XuanjiangForm, self).clean()
+        cleaned_data = self.cleaned_data = super(TalkForm, self).clean()
         logger.debug(cleaned_data)
 
         return cleaned_data
@@ -106,5 +99,5 @@ def add_dialog(request):
         except SubscribeDuplicatedError:
             return {'ret_code': CODE_SUBSCRIBE_DUPLICATED}
 
-    return with_valid_form(DialogForm(request.POST), _add_dialog)
+    return with_valid_form(TalkForm(request.POST), _add_dialog)
 
