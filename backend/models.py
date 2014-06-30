@@ -16,10 +16,10 @@ TECNOLO = 'TE'
 EXPRIEN = 'EX'
 SUPPORT = 'SU'
 TYPE_IN_JOB_CHOICES = ( 
-    (PRODUCT,'product'),
-    (TECNOLO,'tecnolo'),
-    (EXPRIEN,'exprien'),
-    (SUPPORT,'support')
+    (PRODUCT,'产品'),
+    (TECNOLO,'技术'),
+    (EXPRIEN,'用户体验'),
+    (SUPPORT,'管理支持')
 ) 
 
 EDUCATION_CHOICES = (

@@ -60,38 +60,17 @@ define(function(require) {
     var PageForm = Backbone.View.extend(_.extend(formProto, {
         initialize: function() {
             this.setElement($(PageForm.tpl())[0]);
-//            this.$fieldCover = this.$(".group-cover .field");
-/*
-            this.upload = new SimpleUpload({
-                name: 'cover',
-                id: 'id_cover',
-                getUrl: getUrl,
-                upload: upload
-            });
-
-            this.upload.on('upload-failed', _.bind(function() {
-                this.$coverErrors.empty();
-                $("<li>Upload failed</li>").appendTo(this.$coverErrors);
-                this.$coverErrors.fadeIn();
-            }, this)).on('upload-done', _.bind(function() {
-                this.$coverErrors.empty().fadeOut();
-            }, this));
-            $(this.upload.el).appendTo(this.$fieldCover);
-            this.$coverErrors = $("<ul class='parsley-error-list' style='display: none'></ul>");
-            this.$coverErrors.appendTo(this.$fieldCover);
-*/            this.$alert = this.$("p.alert");
+            this.$alert = this.$("p.alert");
 
         },
 
         setPage: function(page) {
             _.each(['pk', 'name' , 'judge', 'place' ,'type', 'education', 'examplace','number','workdesc','jobdesc', 'condition'], _.bind(function(attr) {
-//                console.log('attr: ',attr);
                 if(attr=='judge')
                     this.el[attr].checked = page[attr];
                 else
                     this.el[attr].value = page[attr];
             }, this));
-//            this.upload.setPath(page.cover);
         },
 
         bind: function(data) {
@@ -99,20 +78,15 @@ define(function(require) {
                 id: '',
                 title: '',
                 description: '',
-//                cover: '',
                 url: ''
             };
             data = _.defaults(data, defaults);
             _.each(['pk','name' , 'judge','place',  'type' , 'education','number', 'examplace','workdesc','jobdesc', 'condition'], _.bind(function(attr) {
                 this.el[attr].value = data[attr];
-//                if (attr === 'cover') {
-//                    $(this.el[attr]).trigger('change');
-//                }
             }, this));
         },
 
         onShow: function() {
-            // empty
         },
 
         onHide: function() {
@@ -120,8 +94,6 @@ define(function(require) {
                 $(this.el[attr]).val('');
             }, this));
 
-//            this.upload.setPath(null);
-//            this.$coverErrors.hide().empty();
             $(this.el).parsley('destroy');
         },
 
