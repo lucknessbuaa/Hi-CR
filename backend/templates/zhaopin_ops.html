@@ -1,0 +1,23 @@
+<div class="btn-group btn-group-sm"
+    data-pk="{{ record.pk }}"
+    data-name="{{ record.name }}"
+    data-judge="{{ record.judge|lower }}"
+    data-place="{{ record.place.pk }}"
+    data-type="{{ record.type }}"
+    data-education="{{ record.education}}"
+    data-number="{{ record.number }}"
+    data-examplace="{{ record.examplace.pk }}"
+    data-workdesc="{{ record.workdesc }}"
+    data-jobdesc="{{ record.jobdesc}}"
+    data-condition="{{ record.condition }}"
+    >
+
+    <button class="btn btn-default edit" title="edit">
+        <span class="glyphicon glyphicon-edit"></span>
+    </button>
+
+    <button class="btn btn-danger delete" title="delete">
+        <span class="glyphicon glyphicon-remove"></span>
+    </button>
+
+</div>

@@ -18,13 +18,7 @@
             <a href="/backend/talk">宣讲会信息</a>
         </li>
         <li {% if tab == 'pages' %} class="active" {% endif %}> 
-            <a href="/backend/pages">Pages</a>
-        </li>
-        <li {% if tab == 'dialogs' %} class="active" {% endif %}>
-            <a href="/backend/dialogs">Dialogs</a>
-        </li>
-        <li {% if tab == 'menus' %} class="active" {% endif %}>
-            <a href="/backend/menus">Menus</a>
+          <a href="/backend/zhaopin">招聘信息</a>
         </li>
       </ul>
 
@@ -34,7 +28,7 @@
             {% if user.firstname or user.last_name %}
             {{ user.first_name }} {{ user.last_name }}<b class="caret"></b>
             {% else %}
-            Account<b class="caret"></b>
+            账户<b class="caret"></b>
             {% endif %}
           </a>
           <ul class="dropdown-menu">
@@ -53,7 +47,7 @@
             <li class="divider"></li>
             {% endif %}
 
-            <li><a href="/logout">Sign Out</a></li>
+            <li><a href="/logout">登出</a></li>
           </ul>
         </li>
       </ul>
@@ -61,7 +55,7 @@
       <ul class="nav navbar-nav navbar-right" style="margin-right: 0px;">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            Help
+            帮助
           </a>
           <p class="dropdown-menu" style="padding: 12px; min-width: 132px;">
             QQ: 334813690
