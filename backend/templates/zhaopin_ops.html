@@ -1,10 +1,15 @@
 <div class="btn-group btn-group-sm"
+    data-pk="{{ record.pk }}"
+    data-name="{{ record.name }}"
+    data-judge="{{ record.judge|lower }}"
+    data-place="{{ record.place.pk }}"
     data-type="{{ record.type }}"
-    data-place="{{ record.place }}"
     data-education="{{ record.education}}"
     data-number="{{ record.number }}"
+    data-examplace="{{ record.examplace.pk }}"
     data-workdesc="{{ record.workdesc }}"
-    data_jobdesc="{{ record.jobdesc}}"
+    data-jobdesc="{{ record.jobdesc}}"
+    data-condition="{{ record.condition }}"
     >
 
     <button class="btn btn-default edit" title="edit">

@@ -1,3 +1,4 @@
+# encoding: utf-8
 import time
 import logging
 
@@ -15,44 +16,74 @@ from django_tables2 import RequestConfig
 from underscore import _ as us
 from django_render_json import json
 from django.http import HttpResponseRedirect
+from base.loggers import LOGGING
 
-from base.utils import fieldAttrs
-from backend.models import Zhaopin
+
+from base.models import City,Region,University
+from base.utils import fieldAttrs,with_valid_form,RET_CODES
+from backend.models import Zhaopin,TYPE_IN_JOB_CHOICES,EDUCATION_CHOICES
 from backend import models
 
 class ZhaopinForm(forms.ModelForm):
     
-    type = forms.CharField(label=u'Type',
-            widget=forms.TextInput(attrs=us.extend({}, fieldAttrs, {
-                'parsley-required': '',
-            })))
-    place = forms.CharField(label=u'Place', required=False,
-            widget=forms.TextInput(attrs=us.extend({}, fieldAttrs, {
-                'parsley-required':'',
-            })))
-    education = forms.CharField(label=u'Education', required=False,
+    pk = forms.IntegerField(required=False,
+            widget=forms.HiddenInput(attrs=us.extend({},fieldAttrs)))
+
+    name = forms.CharField(label=u'职位名称', 
             widget=forms.TextInput(attrs=us.extend({}, fieldAttrs, {
                 'parsley-required':'',
             })))
-    number = forms.IntegerField(label=u'Number',required=False,
+
+    judge = forms.BooleanField(label=u'是否实习',required=False)
+    
+    place = forms.ModelChoiceField(queryset=City.objects.all(),label=u'工作地点',
+            widget=forms.Select(attrs=us.extend({},fieldAttrs,{
+                'parsley-required':'',
+            })))
+    type = forms.ChoiceField(choices=TYPE_IN_JOB_CHOICES,label=u'工作类型',
+            widget=forms.Select(attrs=us.extend({},fieldAttrs,{
+                'parsley-required':'',
+            })))
+
+    education = forms.ChoiceField(choices=EDUCATION_CHOICES,label=u'学历要求',
+            widget=forms.Select(attrs=us.extend({},fieldAttrs,{
+                'parsley-required':'',
+            }))) 
+   
+    number = forms.IntegerField(label=u'招聘人数',required=False,
             widget=forms.TextInput(attrs=us.extend({}, fieldAttrs, {
                 'parsley-required':'',
             })))
-    workdesc = forms.CharField(label=u'Responsibility', required=False,
-            widget=forms.TextInput(attrs=us.extend({}, fieldAttrs)))
-    jobdesc = forms.CharField(label=u'Job', required=False,
-            widget=forms.TextInput(attrs=us.extend({}, fieldAttrs)))
+    examplace = forms.ModelChoiceField(queryset=City.objects.all(),label=u'笔面试地点',
+            widget=forms.Select(attrs=us.extend({},fieldAttrs,{
+                'parsley-required':'',
+            })))
+
+    workdesc = forms.CharField(label=u'工作职责', required=False,
+            widget=forms.Textarea(attrs=us.extend({}, fieldAttrs,{
+                'parsley-required': '', 
+                'rows': '4',
+                'style': 'resize:none'  
+           })))
+    jobdesc = forms.CharField(label=u'职位要求', required=False,
+            widget=forms.Textarea(attrs=us.extend({}, fieldAttrs,{
+                'rows': '4',
+           })))
+    condition = forms.CharField(label=u'优先条件', required=False,
+            widget=forms.Textarea(attrs=us.extend({}, fieldAttrs,{
+                'rows': '4',
+           })))
     class Meta:
         model = Zhaopin
 
 class ZhaopinTable(tables.Table):
-    ops = tables.columns.TemplateColumn(template_name='zhaopin_ops.html', orderable=False)
+    ops = tables.columns.TemplateColumn(verbose_name=" 编辑",template_name='zhaopin_ops.html', orderable=False)
 
     class Meta:
         model = Zhaopin
         empty_text = u'no pages'
         orderable=False
-        exclude=('id')
+        exclude=('id','pk','workdesc','jobdesc','condition')
         attrs = {
             'class': 'table table-bordered table-striped'
         }
@@ -60,12 +91,10 @@ class ZhaopinTable(tables.Table):
 @require_GET
 @login_required
 def pages(request):
-#    account = Account.objects.get(user__pk=request.user.pk)
-#    pages = Page.objects.filter(account=account)
     zhaopin = Zhaopin.objects.all()
     if 'q' in request.GET and request.GET['q'] <> "":
         message = request.GET['q']
-        zhaopin = Zhaopin.filter(Q(type__contains=message)|\
+        zhaopin = zhaopin.filter(Q(type__contains=message)|\
         Q(workdesc__contains=message)|\
         Q(jobdesc__contains=message))
     elif 'q' in request.GET and request.GET['q'] == "":
@@ -76,29 +105,24 @@ def pages(request):
     return render(request, "zhaopin.html", {'table': table, 'form': form})
 @require_POST
 @login_required(login_url="/login.json")
+@json
 def add_page(request):
-    #raise Exception()
     def _add_page(form):
-        page = form.save(commit=False)
-        page.account = Account.objects.get(user__pk=request.user.pk)
-        page.save()
+        zhaopin = form.save(commit=False)
+        zhaopin.save()
         return {'ret_code': RET_CODES["ok"]}
-    return with_valid_form(PageForm(request.POST), _add_page)
+    return with_valid_form(ZhaopinForm(request.POST), _add_page)
 
 
 @require_POST
 @login_required(login_url="/login.json")
+@json
 def edit_page(request, id):
-    #raise Exception()
-    #time.sleep(3)
-    account = Account.objects.get(user__pk=request.user.pk)
-    page = Page.objects.get(pk=id, account=account)
-    form = PageForm(request.POST, instance=page)
+    page = Zhaopin.objects.get(pk=id)
+    form = ZhaopinForm(request.POST, instance=page)
 
     def _edit_page(form):
         form.save()
-        if len(PageItem.objects.filter(page=page)) > 0:
-            wps.emitChangeEvent(account)
         return {'ret_code': RET_CODES["ok"]}
 
     return with_valid_form(form, _edit_page)
@@ -108,9 +132,5 @@ def edit_page(request, id):
 @login_required(login_url="/login.json")
 @json
 def delete_page(request):
-    #time.sleep(3)
-    #raise Exception()
-    account = Account.objects.get(user__pk=request.user.pk)
-    Page.objects.filter(pk=request.POST["id"], account=account).delete()
-    wps.emitChangeEvent(account)
+    Zhaopin.objects.filter(pk=request.POST["id"]).delete()
     return {'ret_code': RET_CODES['ok']}
