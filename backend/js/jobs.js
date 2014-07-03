@@ -21,12 +21,12 @@ define(function(require) {
     var SimpleUpload = require("simple-upload");
 
     function modifyPage(data) {
-        var request = $.post("/backend/zhaopin/" + data.pk, data, 'json');
+        var request = $.post("/backend/jobs/" + data.pk, data, 'json');
         return when(request).then(mapErrors, throwNetError);
     }
 
     function addPage(data) {
-        var request = $.post("/backend/zhaopin/add", data, 'json');
+        var request = $.post("/backend/jobs/add", data, 'json');
         return when(request).then(mapErrors, throwNetError);
     }
     function upload(el) {
@@ -47,7 +47,7 @@ define(function(require) {
     }
 
     function deletePage(id) {
-        var request = $.post("/backend/zhaopin/delete", {
+        var request = $.post("/backend/jobs/delete", {
             id: id
         }, 'json');
         return when(request).then(mapErrors, throwNetError);

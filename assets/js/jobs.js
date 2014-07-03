@@ -7260,7 +7260,7 @@ define('simple-upload',['require','jquery','backbone/backbone','underscore','mul
 
     return SimpleUpload;
 });
-define('pages',['require','jquery','jquery.serializeObject','jquery.iframe-transport','bootstrap','parsley','django-csrf-support','when/when','underscore','backbone/backbone','errors','utils','modals','formProto','simple-upload'],function(require) {
+define('jobs',['require','jquery','jquery.serializeObject','jquery.iframe-transport','bootstrap','parsley','django-csrf-support','when/when','underscore','backbone/backbone','errors','utils','modals','formProto','simple-upload'],function(require) {
     require("jquery");
     require("jquery.serializeObject");
     require("jquery.iframe-transport");

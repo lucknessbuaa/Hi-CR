@@ -30,7 +30,7 @@ EDUCATION_CHOICES = (
     ('BS','博士')
 )
 
-class Zhaopin(models.Model):
+class Jobs(models.Model):
     name = models.CharField(verbose_name=u'职位名称',max_length=50)
     judge = models.BooleanField(verbose_name=u'是否是实习')
     place = models.ForeignKey(City,related_name="工作地点",verbose_name=u'工作地点')
