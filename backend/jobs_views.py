@@ -100,17 +100,17 @@ def jobs(request):
     if 'q' in request.GET and request.GET['q'] <> "":
         message = request.GET['q']
         jobs = jobs.filter(Q(type__contains=message)|\
-        Q(workdesc__contains=message)|\
-        Q(jobdesc__contains=message)|\
-        Q(number__contains=message)|\
-        Q(education__contains=message)|\
-        Q(name__contains=message))      
+                           Q(number__contains=message)|\
+                           Q(education__contains=message)|\
+                           Q(name__contains=message))      
     elif 'q' in request.GET and request.GET['q'] == "":
         return HttpResponseRedirect(request.path)
     table = JobsTable(jobs)
     RequestConfig(request, paginate={"per_page": 10}).configure(table)
     form = JobsForm()
     return render(request, "jobs.html", {'table': table, 'form': form})
+
+
 @require_POST
 @login_required(login_url="/login.json")
 @json

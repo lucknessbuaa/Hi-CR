@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 import django.contrib.auth as auth
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django_render_json import render_json,json
+from django_render_json import render_json, json
 
 
 from base.utils import RET_CODES

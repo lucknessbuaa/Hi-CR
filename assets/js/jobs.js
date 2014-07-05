@@ -10758,7 +10758,6 @@ define('jobs',['require','jquery','jquery.serializeObject','jquery.iframe-transp
     var PageForm = Backbone.View.extend(_.extend(formProto, {
         initialize: function() {
             this.setElement($(PageForm.tpl())[0]);
-//            this.$place = $(this.el.place) 
             $(this.el['place']).select2();
             $(this.el['examplace']).select2();
             $(this.el['type']).select2();

@@ -8,5 +8,5 @@ urlpatterns = urlpatterns + patterns('backend.jobs_views',
     url(r'^jobs$','jobs'),
     url(r'^jobs/add$','add_jobs'),
     url(r'^jobs/delete$','delete_jobs'),
-    url(r'^jobs/(?P<id>\d+)$', 'edit_jobs'),
+    url(r'^jobs/(?P<id>\d+)$','edit_jobs'),
 )
