@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="{{ STATIC_URL }}css/talk.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/jobs.css">
 {% endblock %}
 
 {% block content %}
@@ -21,7 +21,7 @@
         <div class="panel-heading">
             职位信息
 
-	    {% include "search.html" with action="zhaopin" value=request.GET.q href=request.path %}
+	    {% include "search.html" with action="jobs" value=request.GET.q href=request.path %}
         </div>
         <div class="panel-body">
             {% render_table table "table_template.html" %}   
@@ -37,17 +37,17 @@
         <p class="alert" style="display: none;"></p>
         
         <div class="form-group">
-            <label class="col-sm-2 required control-label" 
+            <label class="field required control-label" 
                     for="{{ form.name.id_for_label }}">
                     {{ form.name.label }}</label>
-            <div class="col-sm-10">{{ form.name }}</div>
+            <div class="value">{{ form.name }}</div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 required control-label" 
+            <label class="field required control-label" 
                     for="{{ form.judge.id_for_label }}">
                     {{ form.judge.label }}</label>
-            <div class="col-sm-10">
+            <div class="value">
                 <div class="checkbox">
                     {{ form.judge }}
                 </div>
@@ -55,59 +55,61 @@
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 required control-label" 
+            <label class="field required control-label" 
                     for="{{ form.place.id_for_label }}">
                     {{ form.place.label }}</label>
-            <div class="col-sm-10">{{ form.place }}</div>
+            <div class="value">
+                {{ form.place }}
+            </div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 required control-label" 
+            <label class="field required control-label" 
                     for="{{ form.type.id_for_label }}">
                     {{ form.type.label }}</label>
-            <div class="col-sm-10">{{ form.type }}</div>
+            <div class="value">{{ form.type }}</div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 control-label" 
+            <label class="field control-label" 
                     for="{{ form.education.id_for_label }}">
                     {{ form.education.label }}</label>
-            <div class="col-sm-10">{{ form.education }}</div>
+            <div class="value">{{ form.education }}</div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 required control-label" 
+            <label class="field required control-label" 
                     for="{{ form.number.id_for_label }}">
                     {{ form.number.label }}</label>
-            <div class="col-sm-10">{{ form.number }}</div>
+            <div class="value">{{ form.number }}</div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 required control-label" 
+            <label class="field required control-label" 
                     for="{{ form.examplace.id_for_label }}">
                     {{ form.examplace.label }}</label>
-            <div class="col-sm-10">{{ form.examplace }}</div>
+            <div class="value">{{ form.examplace }}</div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 required control-label" 
+            <label class="field required control-label" 
                     for="{{ form.workdesc.id_for_label }}">
                     {{ form.workdesc.label }}</label>
-            <div class="col-sm-10">{{ form.workdesc }}</div>
+            <div class="value">{{ form.workdesc }}</div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 required control-label" 
+            <label class="field required control-label" 
                     for="{{ form.jobdesc.id_for_label }}">
                     {{ form.jobdesc.label }}</label>
-            <div class="col-sm-10">{{ form.jobdesc }}</div>
+            <div class="value">{{ form.jobdesc }}</div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 required control-label" 
+            <label class="field required control-label" 
                     for="{{ form.condition.id_for_label }}">
                     {{ form.condition.label }}</label>
-            <div class="col-sm-10">{{ form.condition }}</div>
+            <div class="value">{{ form.condition }}</div>
         </div>
 
     </form>

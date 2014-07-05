@@ -16,7 +16,7 @@ define(function(require) {
 
     var formModalTpl = _.template(multiline(function() {
         /*@preserve
-        <div class="modal fade">
+        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">>
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -29,7 +29,7 @@ define(function(require) {
                     <button type="button" class="btn btn-primary save" 
                         data-loading-text='<%= loading %>'><%= save %></button>
                     <button type="button" class="btn btn-default cancel" 
-                        data-loading-text='Cancel' data-dismiss="modal">Cancel</button>
+                        data-loading-text='Cancel' data-dismiss="modal">取消</button>
                 </div>
             </div>
         </div>

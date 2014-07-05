@@ -8269,10 +8269,37 @@ form {
 .simple-upload {
   padding-top: 7px;
 }
+.checkbox {
+  padding-left: 20px;
+}
 td.url a {
   word-wrap: break-word;
   word-break: break-all;
 }
 td.cover {
   max-width: 150px;
+}
+.field {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+@media (min-width: 768px) {
+  .field {
+    float: left;
+    width: 18%;
+  }
+}
+.value {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+@media (min-width: 768px) {
+  .value {
+    float: left;
+    width: 82%;
+  }
 }
