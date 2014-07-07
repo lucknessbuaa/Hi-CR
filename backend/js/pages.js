@@ -49,6 +49,7 @@ define(function(require) {
     function deletePage(id) {
         var request = $.post("/backend/zhaopin/delete", {
             id: id
+
         }, 'json');
         return when(request).then(mapErrors, throwNetError);
     }

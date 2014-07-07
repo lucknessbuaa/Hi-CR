@@ -2,11 +2,7 @@
 {% load django_tables2 %}
 
 {% block title %}
-{% if account.company %}
-Dialogs - {{ account.company }} - KUZHANGGUI
-{% else %}
-Dialogs - KUZHANGGUI
-{% endif %}
+宣讲会信息 – 百度校招
 {% endblock %}
 
 {% block css %}
@@ -18,15 +14,15 @@ Dialogs - KUZHANGGUI
 {% include "navbar.html" with tab=request.nav.active_tab %}
 <div class="container">
     <div class="btn-toolbar">
-        <button class="btn btn-primary" id="create-dialog">
-            <span class="glyphicon glyphicon-plus"></span>&nbsp;Create Dialog
+        <button class="btn btn-primary" id="create-talk">
+            <span class="glyphicon glyphicon-plus"></span>&nbsp;新增宣讲会信息
         </button>
     </div>
     <div class="panel panel-default">
         <div class="panel-heading">
-            Dialogs
+            宣讲会信息
 	    
-            {% include "search.html" with action="dialogs" value=request.GET.q href=request.path %}
+            {% include "search.html" with action="talk" value=request.GET.q href=request.path %}
         </div>
         <div class="panel-body">
             {% render_table table "table_template.html" %}
@@ -58,26 +54,27 @@ Dialogs - KUZHANGGUI
                 <ul class="parsley-error-list" style="diaplay: none"></ul>
             </div>
         </div>
-        <div class="form-group group-text">
+        <div class="form-group">
             <label class="col-sm-3 required control-label" 
                     for="{{ form.date.id_for_label }}">
                     {{ form.date.label }}
             </label>
-            <div class="col-sm-8" style="padding-right: 0px; width: 68%;">
+            <div class="col-sm-9">
                 {{ form.date }}
                 <ul class="parsley-error-list" style="display: none"></ul>
-            </div> 
-            <div class="pull-left" style="padding-left: 8px;">
-                <span style="margin-top: 8px;"
-                      class="glyphicon glyphicon-info-sign"
-                      data-toggle="tooltip"
-                      data-trigger="hover"
-                      data-placement="right"
-                      data-container=".modal"
-                      title="Regex is supported"></span>
             </div>
         </div>
-        <div class="form-group hide group-event">
+        <div class="form-group">
+            <label class="col-sm-3 required control-label" 
+                    for="{{ form.place.id_for_label }}">
+                    {{ form.place.label }}
+            </label>
+            <div class="col-sm-9">
+                {{ form.place }}
+                <ul class="parsley-error-list" style="display: none"></ul>
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-sm-3 required control-label" 
                     for="{{ form.capacity.id_for_label }}">
                     {{ form.capacity.label }}
@@ -88,40 +85,26 @@ Dialogs - KUZHANGGUI
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label"></label>
+            <label class="col-sm-3 control-label" 
+                    for="{{ form.speaker.id_for_label }}">
+                    {{ form.speaker.label }}
+            </label>
             <div class="col-sm-9">
-                <label class="radio-inline">
-                    <input type='radio' name='outputType' value='text' checked>
-                    Text
-                </label>
-                <label class="radio-inline">
-                    <input type='radio' name='outputType' value='page'>
-                    Page
-                </label>
-            </div>
-        </div>
-        <div class="form-group last group-response">
-            <label class="col-sm-3 required control-label" 
-                    for="{{ form.response.id_for_label }}">
-                    {{ form.response.label }}</label>
-            <div class="col-sm-9">
-                {{ form.response }}
+                {{ form.speaker }}
                 <ul class="parsley-error-list" style="display: none"></ul>
             </div>
         </div>
-        <div class="form-group hide group-page">
+        <div class="form-group">
             <label class="col-sm-3 required control-label" 
-                    for="{{ form.page.id_for_label }}">
-                    {{ form.pages.label }}</label>
-            <div class="col-sm-9">
-                {{ form.pages }}
+                    for="{{ form.wtdate.id_for_label }}">
+                    {{ form.wtdate.label }}
+            </label>
+            <div class="col-sm-9" >
+                {{ form.wtdate }}
                 <ul class="parsley-error-list" style="display: none"></ul>
-                <div class="help-block" style="margin-bottom: 0px;">
-                    Only pages with both cover and description can be inserted here.
-                </div>
             </div>
         </div>
-    </form>
+    </form> 
 </script>
 
 <script type="text/javascript" src="{{ STATIC_URL }}requirejs/require.js">
