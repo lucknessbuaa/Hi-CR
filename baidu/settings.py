@@ -62,7 +62,7 @@ WSGI_APPLICATION = 'baidu.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'luck',
+        'NAME': 'HiCR',
         'USER': 'root',
         'PASSWORD': 'nameLR9969',
         'HOST': 'localhost',
@@ -89,6 +89,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
+LOGIN_URL = '/login' 
 
 # Additional locations of static files
 STATICFILES_DIRS = (

@@ -21,10 +21,10 @@ from base.loggers import LOGGING
 
 from base.models import City,Region,University
 from base.utils import fieldAttrs,with_valid_form,RET_CODES
-from backend.models import Zhaopin,TYPE_IN_JOB_CHOICES,EDUCATION_CHOICES
+from backend.models import Jobs,TYPE_IN_JOB_CHOICES,EDUCATION_CHOICES
 from backend import models
 
-class ZhaopinForm(forms.ModelForm):
+class JobsForm(forms.ModelForm):
     
     pk = forms.IntegerField(required=False,
             widget=forms.HiddenInput(attrs=us.extend({},fieldAttrs)))
@@ -67,70 +67,78 @@ class ZhaopinForm(forms.ModelForm):
            })))
     jobdesc = forms.CharField(label=u'职位要求', required=False,
             widget=forms.Textarea(attrs=us.extend({}, fieldAttrs,{
+                'parsley-required': '', 
                 'rows': '4',
            })))
     condition = forms.CharField(label=u'优先条件', required=False,
             widget=forms.Textarea(attrs=us.extend({}, fieldAttrs,{
+                'parsley-required': '', 
                 'rows': '4',
            })))
     class Meta:
-        model = Zhaopin
+        model = Jobs
 
-class ZhaopinTable(tables.Table):
-    ops = tables.columns.TemplateColumn(verbose_name=" 编辑",template_name='zhaopin_ops.html', orderable=False)
+class JobsTable(tables.Table):
+    ops = tables.columns.TemplateColumn(verbose_name=" 编辑",template_name='jobs_ops.html', orderable=False) 
+    def render_judge(self,value):
+        return mark_safe('<span class="glyphicon glyphicon-%s"></span>'% ("ok" if value==True else "remove"))
 
     class Meta:
-        model = Zhaopin
-        empty_text = u'no pages'
+        model = Jobs
+        empty_text = u'没有招聘信息'
         orderable=False
         exclude=('id','pk','workdesc','jobdesc','condition')
         attrs = {
+
             'class': 'table table-bordered table-striped'
         }
 
 @require_GET
 @login_required
-def pages(request):
-    zhaopin = Zhaopin.objects.all()
+def jobs(request):
+    jobs = Jobs.objects.all()
     if 'q' in request.GET and request.GET['q'] <> "":
         message = request.GET['q']
-        zhaopin = zhaopin.filter(Q(type__contains=message)|\
-        Q(workdesc__contains=message)|\
-        Q(jobdesc__contains=message))
+        jobs = jobs.filter(Q(type__contains=message)|\
+                           Q(number__contains=message)|\
+                           Q(education__contains=message)|\
+                           Q(name__contains=message))      
     elif 'q' in request.GET and request.GET['q'] == "":
         return HttpResponseRedirect(request.path)
-    table = ZhaopinTable(zhaopin)
+    table = JobsTable(jobs)
     RequestConfig(request, paginate={"per_page": 10}).configure(table)
-    form = ZhaopinForm()
-    return render(request, "zhaopin.html", {'table': table, 'form': form})
+    form = JobsForm()
+    return render(request, "jobs.html", {'table': table, 'form': form})
+
+
 @require_POST
 @login_required(login_url="/login.json")
 @json
-def add_page(request):
-    def _add_page(form):
-        zhaopin = form.save(commit=False)
-        zhaopin.save()
+def add_jobs(request):
+    def _add_jobs(form):
+        jobs = form.save(commit=False)
+        jobs.save()
         return {'ret_code': RET_CODES["ok"]}
-    return with_valid_form(ZhaopinForm(request.POST), _add_page)
+    return with_valid_form(JobsForm(request.POST), _add_jobs)
 
 
 @require_POST
 @login_required(login_url="/login.json")
 @json
-def edit_page(request, id):
-    page = Zhaopin.objects.get(pk=id)
-    form = ZhaopinForm(request.POST, instance=page)
+def edit_jobs(request, id):
+    jobs = Jobs.objects.get(pk=id)
+    form = JobsForm(request.POST, instance=jobs)
 
-    def _edit_page(form):
+    def _edit_jobs(form):
         form.save()
         return {'ret_code': RET_CODES["ok"]}
 
-    return with_valid_form(form, _edit_page)
+    return with_valid_form(form, _edit_jobs)
 
 
 @require_POST
 @login_required(login_url="/login.json")
 @json
-def delete_page(request):
-    Zhaopin.objects.filter(pk=request.POST["id"]).delete()
+def delete_jobs(request):
+    Jobs.objects.filter(pk=request.POST["id"]).delete()
     return {'ret_code': RET_CODES['ok']}

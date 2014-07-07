@@ -4,9 +4,9 @@ urlpatterns = patterns('backend.talk_views',
     url(r'^talk$', 'talk'),
 )
 
-urlpatterns = urlpatterns + patterns('backend.zhaopin_views',
-    url(r'^zhaopin$','pages'),
-    url(r'^zhaopin/add$','add_page'),
-    url(r'^zhaopin/delete$','delete_page'),
-    url(r'^zhaopin/(?P<id>\d+)$', 'edit_page'),
+urlpatterns = urlpatterns + patterns('backend.jobs_views',
+    url(r'^jobs$','jobs'),
+    url(r'^jobs/add$','add_jobs'),
+    url(r'^jobs/delete$','delete_jobs'),
+    url(r'^jobs/(?P<id>\d+)$','edit_jobs'),
 )

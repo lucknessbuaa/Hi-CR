@@ -3,6 +3,7 @@ define(function(require) {
     require("jquery.serializeObject");
     require("jquery.iframe-transport");
     require("bootstrap");
+    require("select2")
     require("parsley");
     var csrf_token = require("django-csrf-support");
     var when = require("when/when");
@@ -20,34 +21,18 @@ define(function(require) {
     var formProto = require("formProto");
     var SimpleUpload = require("simple-upload");
 
-    function modifyPage(data) {
-        var request = $.post("/backend/zhaopin/" + data.pk, data, 'json');
+    function modifyJobs(data) {
+        var request = $.post("/backend/jobs/" + data.pk, data, 'json');
         return when(request).then(mapErrors, throwNetError);
     }
 
-    function addPage(data) {
-        var request = $.post("/backend/zhaopin/add", data, 'json');
+    function addJobs(data) {
+        var request = $.post("/backend/jobs/add", data, 'json');
         return when(request).then(mapErrors, throwNetError);
     }
-    function upload(el) {
-        return when($.ajax("/backend/upload/", {
-            method: 'POST',
-            iframe: true,
-            data: {
-                csrfmiddlewaretoken: csrf_token
-            },
-            files: el,
-            processData: false,
-            dataType: 'json'
-        })).then(function(data) {
-            return mapErrors(data, function(data) {
-                return data.key;
-            });
-        }, throwNetError);
-    }
 
-    function deletePage(id) {
-        var request = $.post("/backend/zhaopin/delete", {
+    function deleteJobs(id) {
+        var request = $.post("/backend/jobs/delete", {
             id: id
         }, 'json');
         return when(request).then(mapErrors, throwNetError);
@@ -60,16 +45,26 @@ define(function(require) {
     var PageForm = Backbone.View.extend(_.extend(formProto, {
         initialize: function() {
             this.setElement($(PageForm.tpl())[0]);
+            $(this.el['place']).select2();
+            $(this.el['examplace']).select2();
+            $(this.el['type']).select2();
+            $(this.el['education']).select2();
             this.$alert = this.$("p.alert");
 
         },
 
         setPage: function(page) {
             _.each(['pk', 'name' , 'judge', 'place' ,'type', 'education', 'examplace','number','workdesc','jobdesc', 'condition'], _.bind(function(attr) {
-                if(attr=='judge')
+                if(attr=='judge') {
                     this.el[attr].checked = page[attr];
-                else
+                }
+                else if(attr=='place'||attr=='type'||attr=='education'||attr=='examplace'){
+                    $(this.el[attr]).select2('val',page[attr]);
+                }
+                else {
                     this.el[attr].value = page[attr];
+                }
+
             }, this));
         },
 
@@ -85,13 +80,18 @@ define(function(require) {
                 this.el[attr].value = data[attr];
             }, this));
         },
-
         onShow: function() {
         },
 
         onHide: function() {
             _.each(['pk', 'name' , 'judge','place' ,'type', 'education','number','examplace','workdesc','jobdesc', 'condition'], _.bind(function(attr) {
                 $(this.el[attr]).val('');
+                if(attr=='judge'){
+                    this.el[attr].checked = false;
+                }
+                if(attr=='place'||attr=='type'||attr=='education'||attr=='examplace'){
+                    $(this.el[attr]).select2('val','');
+                }
             }, this));
 
             $(this.el).parsley('destroy');
@@ -120,11 +120,11 @@ define(function(require) {
             }, this);
 
             if (this.el.pk.value !== "") {
-                modifyPage(this.$el.serializeObject())
+                modifyJobs(this.$el.serializeObject())
                     .then(onFinish, onReject)
                     .ensure(onComplete);
             } else {
-                addPage(this.$el.serializeObject())
+                addJobs(this.$el.serializeObject())
                     .then(onFinish, onReject)
                     .ensure(onComplete);
             }
@@ -144,7 +144,7 @@ define(function(require) {
         $create.click(function() {
             modal.show();
             modal.setTitle('新增职位信息');
-            modal.setSaveText("生成", "生成中...");
+            modal.setSaveText("新增", "生成中...");
         });
 
 
@@ -160,7 +160,7 @@ define(function(require) {
     $(function() {
         var modal = new modals.ActionModal();
         modal.setAction(function(id) {
-            return deletePage(id).then(function() {
+            return deleteJobs(id).then(function() {
                 utils.reload(500);
             }, function(err) {
                 if (err instanceof errors.AuthFailure) {
