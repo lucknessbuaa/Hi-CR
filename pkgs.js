@@ -22,7 +22,7 @@ module.exports = {
         'django-csrf-support': 'components/django-csrf-support/index',
         'parsley': 'components/parsleyjs/parsley',
         'underscore': 'components/underscore/underscore',
-        'bootstrap-datetimepicker': "components/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker",
+        'bootstrap-datetimepicker': "components/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min",
         'multiline': 'components/multiline/browser',
 
         //base modules
@@ -38,7 +38,7 @@ module.exports = {
         // app modules
         'login': 'base/js/login',
         'talk': 'backend/js/talk',
-        'pages': 'backend/js/pages'
+        'jobs': 'backend/js/jobs'
     },
     shim: {
         'jquery-placeholder': {

@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 import django.contrib.auth as auth
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django_render_json import render_json
+from django_render_json import render_json, json
 
 
 from base.utils import RET_CODES
@@ -12,6 +12,9 @@ from base.utils import RET_CODES
 
 logger = logging.getLogger(__name__)
 
+@json
+def loginByJSON(request):
+    return {'ret_code': RET_CODES['auth-failure']}
 @ensure_csrf_cookie
 def login(request):
     if request.method == 'GET':
@@ -36,5 +39,5 @@ def welcome(request):
         logger.warn("welcome: user is not authenticated")
         return redirect("/login")
     else:
-        return render(request, "hello.html")
+        return redirect("/backend/talk")
 

@@ -17,8 +17,8 @@ TECNOLO = 'TE'
 EXPRIEN = 'EX'
 SUPPORT = 'SU'
 TYPE_IN_JOB_CHOICES = ( 
-    (PRODUCT,'产品'),
     (TECNOLO,'技术'),
+    (PRODUCT,'产品'),
     (EXPRIEN,'用户体验'),
     (SUPPORT,'管理支持')
 ) 
@@ -31,7 +31,7 @@ EDUCATION_CHOICES = (
     ('BS','博士')
 )
 
-class Zhaopin(models.Model):
+class Jobs(models.Model):
     name = models.CharField(verbose_name=u'职位名称',max_length=50)
     judge = models.BooleanField(verbose_name=u'是否是实习')
  

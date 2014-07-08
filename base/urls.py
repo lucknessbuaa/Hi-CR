@@ -4,8 +4,9 @@ import base.views
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', 'base.views.welcome'),
+    url(r'^/?$', 'base.views.welcome'),
     url(r'^login$', 'base.views.login'),
+    url(r'^login.json$','base.views.loginByJSON'),
     url(r'^logout$','base.views.logout'),
     url(r'^welcome$','base.views.welcome'),
 
