@@ -3828,7 +3828,7 @@ the specific language governing permissions and limitations under the Apache Lic
         formatResultCssClass: function(data) {return data.css;},
         formatSelectionCssClass: function(data, container) {return undefined;},
         formatMatches: function (matches) { return matches + " results are available, use up and down arrow keys to navigate."; },
-        formatNoMatches: function () { return "No matches found"; },
+        formatNoMatches: function () { return "没有找到相关信息"; },
         formatInputTooShort: function (input, min) { var n = min - input.length; return "Please enter " + n + " or more character" + (n == 1? "" : "s"); },
         formatInputTooLong: function (input, max) { var n = input.length - max; return "Please delete " + n + " character" + (n == 1? "" : "s"); },
         formatSelectionTooBig: function (limit) { return "You can only select " + limit + " item" + (limit == 1 ? "" : "s"); },
@@ -6244,7 +6244,7 @@ define("jquery.ui.sortable", ["jquery","jquery.ui.core","jquery.ui.mouse","jquer
             email:      "This value should be a valid email."
           , url:        "This value should be a valid url."
           , urlstrict:  "This value should be a valid url."
-          , number:     "This value should be a valid number."
+          , number:     "请输入数字."
           , digits:     "This value should be digits."
           , dateIso:    "This value should be a valid date (YYYY-MM-DD)."
           , alphanum:   "This value should be alphanumeric."
@@ -6252,9 +6252,9 @@ define("jquery.ui.sortable", ["jquery","jquery.ui.core","jquery.ui.mouse","jquer
         }
       , notnull:        "This value should not be null."
       , notblank:       "This value should not be blank."
-      , required:       "This value is required."
+      , required:       "这是必填项。"
       , regexp:         "This value seems to be invalid."
-      , min:            "This value should be greater than or equal to %s."
+      , min:            "请输入一个自然数."
       , max:            "This value should be lower than or equal to %s."
       , range:          "This value should be between %s and %s."
       , minlength:      "This value is too short. It should have %s characters or more."
@@ -12914,13 +12914,13 @@ define('formProto',['require','jquery','errors'],function(require) {
 
         onCommonErrors: function(err) {
             if (err instanceof errors.NetworkError) {
-                this.tip('Network error!', 'danger');
+                this.tip('网络错误!', 'danger');
                 return true;
             } else if (err instanceof errors.InternalError) {
-                this.tip('Server error!', 'danger');
+                this.tip('服务器错误!', 'danger');
                 return true;
             } else if (err instanceof errors.FormInvalidError) {
-                this.tip('Server error!', 'danger');
+                this.tip('服务器错误!', 'danger');
                 return true;
             }
         },
@@ -12943,6 +12943,7 @@ define('formProto',['require','jquery','errors'],function(require) {
 
     return formProto;
 });
+
 define('formValidationProto',['require','jquery','underscore'],function(require) {
     require("jquery");
     var _ = require("underscore");
@@ -12985,7 +12986,7 @@ define('modals',['require','jquery','underscore','backbone/backbone','multiline'
 
     var formModalTpl = _.template(multiline(function() {
         /*@preserve
-        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">>
+        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
