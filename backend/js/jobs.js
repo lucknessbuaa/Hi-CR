@@ -46,10 +46,23 @@ define(function(require) {
     var PageForm = Backbone.View.extend(_.extend(proto, {
         initialize: function() {
             this.setElement($(PageForm.tpl())[0]);
-            $(this.el['place']).select2();
-            $(this.el['examplace']).select2();
-            $(this.el['type']).select2();
-            $(this.el['education']).select2();
+            $(this.el).parsley({
+                messages:{
+                    required : "这是必填项。"
+                }
+            });
+            $(this.el['place']).select2({
+                formatNoMatches: function () { return "没有找到相关信息"; },
+            });
+            $(this.el['examplace']).select2({
+                formatNoMatches: function () { return "没有找到相关信息"; },
+            });
+            $(this.el['type']).select2({
+                formatNoMatches: function () { return "没有找到相关信息"; },
+            });
+            $(this.el['education']).select2({
+                formatNoMatches: function () { return "没有找到相关信息"; },
+            });
             this.$alert = this.$("p.alert");
             $("#id-ignore-number").change(function(){
             if($(this).is(":checked")){    

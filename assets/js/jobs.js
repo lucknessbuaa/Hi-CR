@@ -3640,7 +3640,7 @@ the specific language governing permissions and limitations under the Apache Lic
         formatResultCssClass: function(data) {return data.css;},
         formatSelectionCssClass: function(data, container) {return undefined;},
         formatMatches: function (matches) { return matches + " results are available, use up and down arrow keys to navigate."; },
-        formatNoMatches: function () { return "没有找到相关信息"; },
+        formatNoMatches: function () { return "No matches found"; },
         formatInputTooShort: function (input, min) { var n = min - input.length; return "Please enter " + n + " or more character" + (n == 1? "" : "s"); },
         formatInputTooLong: function (input, max) { var n = input.length - max; return "Please delete " + n + " character" + (n == 1? "" : "s"); },
         formatSelectionTooBig: function (limit) { return "You can only select " + limit + " item" + (limit == 1 ? "" : "s"); },
@@ -3745,7 +3745,7 @@ define("select2", ["jquery"], function(){});
             email:      "This value should be a valid email."
           , url:        "This value should be a valid url."
           , urlstrict:  "This value should be a valid url."
-          , number:     "请输入数字."
+          , number:     "This value should be a valid number."
           , digits:     "This value should be digits."
           , dateIso:    "This value should be a valid date (YYYY-MM-DD)."
           , alphanum:   "This value should be alphanumeric."
@@ -3753,9 +3753,9 @@ define("select2", ["jquery"], function(){});
         }
       , notnull:        "This value should not be null."
       , notblank:       "This value should not be blank."
-      , required:       "这是必填项。"
+      , required:       "This value is required."
       , regexp:         "This value seems to be invalid."
-      , min:            "请输入一个自然数."
+      , min:            "This value should be greater than or equal to %s."
       , max:            "This value should be lower than or equal to %s."
       , range:          "This value should be between %s and %s."
       , minlength:      "This value is too short. It should have %s characters or more."
@@ -10784,10 +10784,23 @@ define('jobs',['require','jquery','jquery.serializeObject','jquery.iframe-transp
     var PageForm = Backbone.View.extend(_.extend(proto, {
         initialize: function() {
             this.setElement($(PageForm.tpl())[0]);
-            $(this.el['place']).select2();
-            $(this.el['examplace']).select2();
-            $(this.el['type']).select2();
-            $(this.el['education']).select2();
+            $(this.el).parsley({
+                messages:{
+                    required : "这是必填项。"
+                }
+            });
+            $(this.el['place']).select2({
+                formatNoMatches: function () { return "没有找到相关信息"; },
+            });
+            $(this.el['examplace']).select2({
+                formatNoMatches: function () { return "没有找到相关信息"; },
+            });
+            $(this.el['type']).select2({
+                formatNoMatches: function () { return "没有找到相关信息"; },
+            });
+            $(this.el['education']).select2({
+                formatNoMatches: function () { return "没有找到相关信息"; },
+            });
             this.$alert = this.$("p.alert");
             $("#id-ignore-number").change(function(){
             if($(this).is(":checked")){    
@@ -10811,7 +10824,6 @@ define('jobs',['require','jquery','jquery.serializeObject','jquery.iframe-transp
                 else if(attr=='number'){
                     this.el[attr].value = page[attr];
                     numbers = page[attr];
-//                    if(numbers !== '' && numbers !== undefined && numbers !==null && numbers !=='None') {
                     if(numbers != 0){
                         $("#id-ignore-number").prop('checked',false);
                         $("#number").show();  
@@ -10862,7 +10874,6 @@ define('jobs',['require','jquery','jquery.serializeObject','jquery.iframe-transp
                     $("#number").hide();    
                 }
             }, this));
-//            this.clear();
             this.clearErrors(['number']);
             this.clearTip();
             $(this.el).parsley('destroy');
@@ -10896,7 +10907,7 @@ define('jobs',['require','jquery','jquery.serializeObject','jquery.iframe-transp
             if (!this.validate()){
                 return setTimeout(onComplete,0);    
             }
-//
+            
             if (!this.$el.parsley('validate')) {
                 return setTimeout(onComplete, 0);
             }              
