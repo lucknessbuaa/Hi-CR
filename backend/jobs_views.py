@@ -89,7 +89,7 @@ class JobsTable(tables.Table):
         return "若干" if value==0 else  value 
     def render_name(self,record):
         st = "%s" %record.name
-        st += (u"(实习)"if record.judge ==True else "")
+        st += (u"（实习）"if record.judge ==True else "")
         return st
     class Meta:
         model = Jobs
