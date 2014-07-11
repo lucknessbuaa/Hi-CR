@@ -36,7 +36,7 @@ class Jobs(models.Model):
     place = models.ForeignKey(City,related_name="工作地点", verbose_name=u'工作地点')
     type = models.CharField(verbose_name=u'工作类型', choices=TYPE_IN_JOB_CHOICES, max_length=5)
     education = models.CharField(verbose_name=u'学历要求', choices=EDUCATION_CHOICES,max_length=5)
-    number = models.IntegerField(verbose_name=u'招聘人数')
+    number = models.IntegerField(verbose_name=u'招聘人数',max_length=100, null=True , blank=True)
     examplace = models.ForeignKey(City,related_name="笔面试地点", verbose_name=u'笔面试地点')
     workdesc = models.TextField(verbose_name=u'工作职责', max_length=500, null=True, blank=True)
     jobdesc = models.TextField(verbose_name=u'职位要求', max_length=500, null=True, blank=True)

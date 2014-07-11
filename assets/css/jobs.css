@@ -8288,7 +8288,7 @@ td.cover {
 @media (min-width: 768px) {
   .field {
     float: left;
-    width: 18%;
+    width: 20%;
   }
 }
 .value {
@@ -8300,6 +8300,6 @@ td.cover {
 @media (min-width: 768px) {
   .value {
     float: left;
-    width: 82%;
+    width: 78%;
   }
 }

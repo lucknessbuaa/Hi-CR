@@ -12914,13 +12914,13 @@ define('formProto',['require','jquery','errors'],function(require) {
 
         onCommonErrors: function(err) {
             if (err instanceof errors.NetworkError) {
-                this.tip('Network error!', 'danger');
+                this.tip('网络错误!', 'danger');
                 return true;
             } else if (err instanceof errors.InternalError) {
-                this.tip('Server error!', 'danger');
+                this.tip('服务器错误!', 'danger');
                 return true;
             } else if (err instanceof errors.FormInvalidError) {
-                this.tip('Server error!', 'danger');
+                this.tip('服务器错误!', 'danger');
                 return true;
             }
         },
@@ -12943,6 +12943,7 @@ define('formProto',['require','jquery','errors'],function(require) {
 
     return formProto;
 });
+
 define('formValidationProto',['require','jquery','underscore'],function(require) {
     require("jquery");
     var _ = require("underscore");
@@ -12985,7 +12986,7 @@ define('modals',['require','jquery','underscore','backbone/backbone','multiline'
 
     var formModalTpl = _.template(multiline(function() {
         /*@preserve
-        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">>
+        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

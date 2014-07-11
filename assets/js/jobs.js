@@ -10400,7 +10400,7 @@ define('modals',['require','jquery','underscore','backbone/backbone','multiline'
 
     var formModalTpl = _.template(multiline(function() {
         /*@preserve
-        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">>
+        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -10574,13 +10574,13 @@ define('formProto',['require','jquery','errors'],function(require) {
 
         onCommonErrors: function(err) {
             if (err instanceof errors.NetworkError) {
-                this.tip('Network error!', 'danger');
+                this.tip('网络错误!', 'danger');
                 return true;
             } else if (err instanceof errors.InternalError) {
-                this.tip('Server error!', 'danger');
+                this.tip('服务器错误!', 'danger');
                 return true;
             } else if (err instanceof errors.FormInvalidError) {
-                this.tip('Server error!', 'danger');
+                this.tip('服务器错误!', 'danger');
                 return true;
             }
         },
@@ -10602,6 +10602,31 @@ define('formProto',['require','jquery','errors'],function(require) {
     }
 
     return formProto;
+});
+
+define('formValidationProto',['require','jquery','underscore'],function(require) {
+    require("jquery");
+    var _ = require("underscore");
+
+    return {
+        addError: function(el, msg) {
+            var $errorList = $(el).siblings('ul.parsley-error-list');
+            $errorList.empty();
+            $("<li>" + msg + "</li>").appendTo($errorList);
+            $errorList.fadeIn();
+        },
+
+        clearError: function(el) {
+            var $errorList = $(el).siblings('ul.parsley-error-list');
+            $errorList.empty().hide();
+        },
+
+        clearErrors: function(fields) {
+            _.each(fields, _.bind(function(field) {
+                this.clearError(this.el[field]);
+            }, this));
+        }
+    };
 });
 define('simple-upload',['require','jquery','backbone/backbone','underscore','multiline'],function(require) {
     require("jquery");
@@ -10711,7 +10736,7 @@ define('simple-upload',['require','jquery','backbone/backbone','underscore','mul
 
     return SimpleUpload;
 });
-define('jobs',['require','jquery','jquery.serializeObject','jquery.iframe-transport','bootstrap','select2','parsley','django-csrf-support','when/when','underscore','backbone/backbone','errors','utils','modals','formProto','simple-upload'],function(require) {
+define('jobs',['require','jquery','jquery.serializeObject','jquery.iframe-transport','bootstrap','select2','parsley','django-csrf-support','when/when','underscore','backbone/backbone','errors','utils','modals','formProto','formValidationProto','simple-upload'],function(require) {
     require("jquery");
     require("jquery.serializeObject");
     require("jquery.iframe-transport");
@@ -10732,6 +10757,7 @@ define('jobs',['require','jquery','jquery.serializeObject','jquery.iframe-transp
 
     var modals = require('modals');
     var formProto = require("formProto");
+    var formValidationProto = require("formValidationProto");
     var SimpleUpload = require("simple-upload");
 
     function modifyJobs(data) {
@@ -10754,16 +10780,37 @@ define('jobs',['require','jquery','jquery.serializeObject','jquery.iframe-transp
     function getUrl(key) {
         return "/backend/upload/" + key;
     }
-
-    var PageForm = Backbone.View.extend(_.extend(formProto, {
+    var proto = _.extend({}, formProto, formValidationProto);
+    var PageForm = Backbone.View.extend(_.extend(proto, {
         initialize: function() {
             this.setElement($(PageForm.tpl())[0]);
-            $(this.el['place']).select2();
-            $(this.el['examplace']).select2();
-            $(this.el['type']).select2();
-            $(this.el['education']).select2();
+            $(this.el).parsley({
+                messages:{
+                    required : "这是必填项。"
+                }
+            });
+            $(this.el['place']).select2({
+                formatNoMatches: function () { return "没有找到相关信息"; },
+            });
+            $(this.el['examplace']).select2({
+                formatNoMatches: function () { return "没有找到相关信息"; },
+            });
+            $(this.el['type']).select2({
+                formatNoMatches: function () { return "没有找到相关信息"; },
+            });
+            $(this.el['education']).select2({
+                formatNoMatches: function () { return "没有找到相关信息"; },
+            });
             this.$alert = this.$("p.alert");
-
+            $("#id-ignore-number").change(function(){
+            if($(this).is(":checked")){    
+                $("#number").val('').hide();  
+                $("#id_number").val('');
+                this.el['number'].value = ''; 
+            } else {
+                $("#number").show();
+            }   
+            }); 
         },
 
         setPage: function(page) {
@@ -10774,7 +10821,20 @@ define('jobs',['require','jquery','jquery.serializeObject','jquery.iframe-transp
                 else if(attr=='place'||attr=='type'||attr=='education'||attr=='examplace'){
                     $(this.el[attr]).select2('val',page[attr]);
                 }
-                else {
+                else if(attr=='number'){
+                    this.el[attr].value = page[attr];
+                    numbers = page[attr];
+                    if(numbers != 0){
+                        $("#id-ignore-number").prop('checked',false);
+                        $("#number").show();  
+                    } else {
+                        $("#id-ignore-number").prop('checked',true);
+                        $("#number").hide(); 
+                        this.el[attr].value = null;   
+                        $("#id_number").val('');
+                    }
+                }
+                else{
                     this.el[attr].value = page[attr];
                 }
 
@@ -10802,22 +10862,55 @@ define('jobs',['require','jquery','jquery.serializeObject','jquery.iframe-transp
                 if(attr=='judge'){
                     this.el[attr].checked = false;
                 }
-                if(attr=='place'||attr=='type'||attr=='education'||attr=='examplace'){
+                if(attr=='place'||attr=='examplace'){
                     $(this.el[attr]).select2('val','');
                 }
+                if(attr=='type')
+                    $(this.el[attr]).select2('val','TE');
+                if(attr=='education')
+                    $(this.el[attr]).select2('val','QT');
+                if(attr=='number'){
+                    $("#id-ignore-number").prop('checked',true);                     
+                    $("#number").hide();    
+                }
             }, this));
-
+            this.clearErrors(['number']);
+            this.clearTip();
             $(this.el).parsley('destroy');
         },
-
+        validate: function() {            
+            this.clearErrors(['number']);
+            judge = this.el['number'].value;
+            if(this.$("#id-ignore-number").is(":checked")){
+                this.el['number'].value = 0;
+            }else{
+                if(judge === ""|| parseInt(judge)!=judge){
+                    this.addError(this.el.number, '这是必填项/必须填入整数。');
+                    return false;
+                }
+                if(judge <=0){
+                    this.addError(this.el.number, '请填入一个正数。');
+                    return false;
+                }
+                if(judge >1000000){
+                    this.addError(this.el.number, '请填入合适的正数。');
+                    return false;
+                }
+            }
+            return true;
+        },
         save: function() {
             var onComplete = _.bind(function() {
                 this.trigger('save');
             }, this);
-
+            
+            if (!this.validate()){
+                return setTimeout(onComplete,0);    
+            }
+            
             if (!this.$el.parsley('validate')) {
                 return setTimeout(onComplete, 0);
-            }
+            }              
 
             var onReject = _.bind(function(err) {
                 handleErrors(err,
@@ -10828,7 +10921,7 @@ define('jobs',['require','jquery','jquery.serializeObject','jquery.iframe-transp
             }, this);
 
             var onFinish = _.bind(function() {
-                this.tip('Succeed!', 'success');
+                this.tip('成功!', 'success');
                 utils.reload(500);
             }, this);
 
@@ -10845,24 +10938,25 @@ define('jobs',['require','jquery','jquery.serializeObject','jquery.iframe-transp
     }));
 
     $(function() {
-        // FIXME
-        PageForm.tpl = _.template($("#form_tpl").html());
 
+        PageForm.tpl = _.template($("#form_tpl").html());
+      
         var form = new PageForm();
         var modal = new modals.FormModal();
         modal.setForm(form);
+
         $(modal.el).appendTo(document.body);
 
         $create = $("#create-page");
         $create.click(function() {
             modal.show();
-            modal.setTitle('新增职位信息');
-            modal.setSaveText("新增", "生成中...");
+            modal.setTitle('创建招聘信息');
+            modal.setSaveText("创建", "创建中...");
         });
 
 
         $("table").on("click", ".edit", function() {
-            modal.setTitle('编辑职位信息');
+            modal.setTitle('编辑招聘信息');
             modal.setSaveText("保存", "保存中...");
             var page = $(this).parent().data();
             form.setPage(page);
@@ -10871,6 +10965,15 @@ define('jobs',['require','jquery','jquery.serializeObject','jquery.iframe-transp
     });
 
     $(function() {
+        $("#id-ignore-number").change(function(){
+            if($(this).is(":checked")){    
+                $("#number").val('').hide();  
+                $("#id_number").val('');
+                this.el['number'].value = ''; 
+            } else {
+                $("#number").show();
+            }   
+        });      
         var modal = new modals.ActionModal();
         modal.setAction(function(id) {
             return deleteJobs(id).then(function() {
