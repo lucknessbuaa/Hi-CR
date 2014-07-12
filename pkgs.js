@@ -22,7 +22,7 @@ module.exports = {
         'django-csrf-support': 'components/django-csrf-support/index',
         'parsley': 'components/parsleyjs/parsley',
         'underscore': 'components/underscore/underscore',
-        'bootstrap-datetimepicker': "components/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker",
+        'bootstrap-datetimepicker': "components/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min",
         'zh-CN': "./components/smalot-bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN",
         'multiline': 'components/multiline/browser',
 

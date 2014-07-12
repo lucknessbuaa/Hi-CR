@@ -2,47 +2,59 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
     'formatters': {
-        'standard': {
-                'format': '%(levelname)s %(asctime)s %(message)s'
-                },
-    },
+        'normal': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(message)s'
+        },  
+        'simple': {
+            'format': '%(levelname)s %(module)s %(message)s'
+            }   
+    },       
     'filters': {
     },
     'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
-            'formatter':'standard',
-        },
-        'test1_handler': {
-            'level':'DEBUG',
-            'class':'logging.handlers.RotatingFileHandler',
-            'filename':'path1',
-            'formatter':'standard',
-        },
-        'test2_handler': {
-            'level':'DEBUG',
-                   'class':'logging.handlers.RotatingFileHandler',
-            'filename':'path2',
-            'formatter':'standard',
-        },
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },  
+        'console':{
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },  
+        'django': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'when': 'D',
+            'interval': 1,
+            'backupCount': 5,
+            'filename': 'logs/django.log',
+            'formatter': 'normal'
+        },  
+        'hicr': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'when': 'D',
+            'interval': 1,
+            'backupCount': 5,
+            'filename': 'logs/hicr.log',
+            'formatter': 'normal'
+        },  
     },
     'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
+        'django': {
+            'handlers': ['django'],
+            'propagate': False,
+            'level': 'DEBUG'
         },
-        'test1':{
-            'handlers': ['test1_handler'],
-            'level': 'INFO',
-            'propagate': False
+        'mq': {
+            'handlers': ['console', 'hicr'],
+            'propagate': False,
+            'level': 'DEBUG'
         },
-         'test2':{
-            'handlers': ['test2_handler'],
-            'level': 'INFO',
-                          'propagate': False
-        },
-    }
+        '': {
+            'handlers': ['hicr'],
+            'level': 'DEBUG'
+        }
+    }    
 }
 

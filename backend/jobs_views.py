@@ -16,7 +16,6 @@ from django_tables2 import RequestConfig
 from underscore import _ as us
 from django_render_json import json
 from django.http import HttpResponseRedirect
-from base.loggers import LOGGING
 
 from base.decorators import active_tab
 from base.models import City,Region,University
@@ -29,7 +28,7 @@ class JobsForm(forms.ModelForm):
     pk = forms.IntegerField(required=False,
             widget=forms.HiddenInput(attrs=us.extend({},fieldAttrs)))
 
-    name = forms.CharField(label=u'职位名称', 
+    name = forms.CharField(label=u'职位名称',max_length=20, 
             widget=forms.TextInput(attrs=us.extend({}, fieldAttrs, {
                 'parsley-required':'',
             })))
@@ -52,7 +51,6 @@ class JobsForm(forms.ModelForm):
    
     number = forms.IntegerField(label=u'招聘人数',required=False,
             widget=forms.TextInput(attrs=us.extend({}, fieldAttrs, {
-                'parsley-required':'',
             })))
     examplace = forms.ModelChoiceField(queryset=City.objects.all(),label=u'笔面试地点',
             widget=forms.Select(attrs=us.extend({},fieldAttrs,{
@@ -69,25 +67,34 @@ class JobsForm(forms.ModelForm):
             widget=forms.Textarea(attrs=us.extend({}, fieldAttrs,{
                 'parsley-required': '', 
                 'rows': '4',
+                'style': 'resize:none' 
            })))
     condition = forms.CharField(label=u'优先条件', required=False,
             widget=forms.Textarea(attrs=us.extend({}, fieldAttrs,{
                 'parsley-required': '', 
                 'rows': '4',
+                'style': 'resize:none' 
            })))
     class Meta:
         model = Jobs
 
 class JobsTable(tables.Table):
-    ops = tables.columns.TemplateColumn(verbose_name=" 编辑",template_name='jobs_ops.html', orderable=False) 
+    number = tables.Column(empty_values=())
+    ops = tables.columns.TemplateColumn(verbose_name=" 操作",template_name='jobs_ops.html', orderable=False) 
     def render_judge(self,value):
+        pd=value
         return mark_safe('<span class="glyphicon glyphicon-%s"></span>'% ("ok" if value==True else "remove"))
-
+    def render_number(self,value):
+        return "若干" if value==0 else  value 
+    def render_name(self,record):
+        st = "%s" %record.name
+        st += (u"（实习）"if record.judge ==True else "")
+        return st
     class Meta:
         model = Jobs
         empty_text = u'没有招聘信息'
         orderable=False
-        exclude=('id','pk','workdesc','jobdesc','condition')
+        exclude=('judge','id','pk','workdesc','jobdesc','condition')
         attrs = {
 
             'class': 'table table-bordered table-striped'
@@ -95,6 +102,7 @@ class JobsTable(tables.Table):
 
 @require_GET
 @login_required
+@active_tab('jobs')
 def jobs(request):
     jobs = Jobs.objects.all()
     if 'q' in request.GET and request.GET['q'] <> "":
@@ -102,10 +110,12 @@ def jobs(request):
         jobs = jobs.filter(Q(type__contains=message)|\
                            Q(number__contains=message)|\
                            Q(education__contains=message)|\
-                           Q(name__contains=message))      
+                           Q(name__contains=message))   
     elif 'q' in request.GET and request.GET['q'] == "":
         return HttpResponseRedirect(request.path)
     table = JobsTable(jobs)
+    if (jobs.count()==0 and request.GET['q'] <> "") :
+        table.empty_text = u"没有搜索结果"
     RequestConfig(request, paginate={"per_page": 10}).configure(table)
     form = JobsForm()
     return render(request, "jobs.html", {'table': table, 'form': form})

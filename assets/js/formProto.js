@@ -12,13 +12,13 @@ define(function(require) {
 
         onCommonErrors: function(err) {
             if (err instanceof errors.NetworkError) {
-                this.tip('网络异常！', 'danger');
+                this.tip('网络错误!', 'danger');
                 return true;
             } else if (err instanceof errors.InternalError) {
-                this.tip('服务器错误！', 'danger');
+                this.tip('服务器错误!', 'danger');
                 return true;
             } else if (err instanceof errors.FormInvalidError) {
-                this.tip('服务器错误！', 'danger');
+                this.tip('服务器错误!', 'danger');
                 return true;
             }
         },
