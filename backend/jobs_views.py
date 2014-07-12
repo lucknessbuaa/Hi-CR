@@ -16,7 +16,7 @@ from django_tables2 import RequestConfig
 from underscore import _ as us
 from django_render_json import json
 from django.http import HttpResponseRedirect
-from base.loggers import LOGGING
+from baidu.loggers import LOGGING
 
 from base.decorators import active_tab
 from base.models import City,Region,University
