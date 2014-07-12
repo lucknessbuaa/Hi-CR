@@ -1,5 +1,5 @@
 host:=0.0.0.0
-port:=9000
+port:=9003
 activate_venv=source venv/bin/activate
 
 debug:
@@ -7,9 +7,9 @@ debug:
 
 start-uwsgi:
 	$(activate_venv) \
-	&& uwsgi --socket 127.0.0.1:$(PORT) \
+	&& uwsgi --socket 127.0.0.1:$(port) \
           --chdir $(shell pwd) \
-          --wsgi-file base/wsgi.py \
+          --wsgi-file baidu/wsgi.py \
           --master \
           --process 4 \
           --daemonize $(shell pwd)/logs/uwsgi.log \
