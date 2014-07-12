@@ -18,7 +18,7 @@ from django_render_json import json
 from django.http import HttpResponseRedirect
 from base.loggers import LOGGING
 
-
+from base.decorators import active_tab
 from base.models import City,Region,University
 from base.utils import fieldAttrs,with_valid_form,RET_CODES
 from backend.models import Jobs,TYPE_IN_JOB_CHOICES,EDUCATION_CHOICES

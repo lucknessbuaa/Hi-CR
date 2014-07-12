@@ -389,7 +389,7 @@ define('login',['require','jquery','bootstrap','jquery-placeholder','django-csrf
             $submit.button('loading');
             login(user, password).then(function(authenticated) {
                 if (!authenticated) {
-                    return tip("邮箱或密码不正确");
+                    return tip("用户名或密码不正确");
                 }
 
                 window.location = "/welcome";

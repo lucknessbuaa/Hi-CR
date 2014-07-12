@@ -29,7 +29,7 @@ define(function(require) {
                     <button type="button" class="btn btn-primary save" 
                         data-loading-text='<%= loading %>'><%= save %></button>
                     <button type="button" class="btn btn-default cancel" 
-                        data-loading-text='Cancel' data-dismiss="modal">»°œ˚</button>
+                        data-loading-text='Cancel' data-dismiss="modal">ÂèñÊ∂à</button>
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@ define(function(require) {
 
         events: {
             'click .save': 'onSave',
-            'show.bs.modal': 'onShow',
+            'shown.bs.modal': 'onShow',
             'hidden.bs.modal': 'onHide'
         },
 

@@ -4454,6 +4454,25 @@ define("bootstrap", ["jquery"], function(){});
 
 define("bootstrap-datetimepicker", function(){});
 
+/**
+ * Simplified Chinese translation for bootstrap-datetimepicker
+ * Yuan Cheung <advanimal@gmail.com>
+ */
+;(function($){
+	$.fn.datetimepicker.dates['zh-CN'] = {
+				days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
+			daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+			daysMin:  ["日", "一", "二", "三", "四", "五", "六", "日"],
+			months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+			monthsShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+			today: "今日",
+		suffix: [],
+		meridiem: []
+	};
+}(jQuery));
+
+define("zh-CN", function(){});
+
 /*
 Copyright 2012 Igor Vaynberg
 
@@ -14456,11 +14475,13 @@ define('errors',[],function() {
         FormInvalidError: FormInvalidError
     };
 });
+
 define('codes',[],function() {
     return {
         ok: 0,
         AuthFailure: 1001,
-        FormInvalid: 1002
+        FormInvalid: 1002,
+        InternalError: 3001
     };
 });
 
@@ -14543,13 +14564,13 @@ define('formProto',['require','jquery','errors'],function(require) {
 
         onCommonErrors: function(err) {
             if (err instanceof errors.NetworkError) {
-                this.tip('Network error!', 'danger');
+                this.tip('网络异常！', 'danger');
                 return true;
             } else if (err instanceof errors.InternalError) {
-                this.tip('Server error!', 'danger');
+                this.tip('服务器错误！', 'danger');
                 return true;
             } else if (err instanceof errors.FormInvalidError) {
-                this.tip('Server error!', 'danger');
+                this.tip('服务器错误！', 'danger');
                 return true;
             }
         },
@@ -14572,6 +14593,7 @@ define('formProto',['require','jquery','errors'],function(require) {
 
     return formProto;
 });
+
 define('formValidationProto',['require','jquery','underscore'],function(require) {
     require("jquery");
     var _ = require("underscore");
@@ -14658,7 +14680,7 @@ define('modals',['require','jquery','underscore','backbone/backbone','multiline'
 
     var formModalTpl = _.template(multiline(function() {
         /*@preserve
-        <div class="modal fade">
+        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -14671,7 +14693,7 @@ define('modals',['require','jquery','underscore','backbone/backbone','multiline'
                     <button type="button" class="btn btn-primary save" 
                         data-loading-text='<%= loading %>'><%= save %></button>
                     <button type="button" class="btn btn-default cancel" 
-                        data-loading-text='Cancel' data-dismiss="modal">Cancel</button>
+                        data-loading-text='Cancel' data-dismiss="modal">取消</button>
                 </div>
             </div>
         </div>
@@ -14700,7 +14722,7 @@ define('modals',['require','jquery','underscore','backbone/backbone','multiline'
 
         events: {
             'click .save': 'onSave',
-            'show.bs.modal': 'onShow',
+            'shown.bs.modal': 'onShow',
             'hidden.bs.modal': 'onHide'
         },
 
@@ -14926,7 +14948,7 @@ define('simple-upload',['require','jquery','backbone/backbone','underscore','mul
 
     return SimpleUpload;
 });
-define('talk',['require','jquery','jquery.serializeObject','jquery.iframe-transport','bootstrap','moment','bootstrap-datetimepicker','select2','parsley','django-csrf-support','when/when','underscore','backbone/backbone','errors','utils','formProto','formValidationProto','modals','simple-upload'],function(require) {
+define('talk',['require','jquery','jquery.serializeObject','jquery.iframe-transport','bootstrap','moment','bootstrap-datetimepicker','zh-CN','select2','parsley','django-csrf-support','when/when','underscore','backbone/backbone','errors','utils','formProto','formValidationProto','modals','simple-upload'],function(require) {
     require("jquery");
     require("jquery.serializeObject");
     //require('jquery-placeholder');
@@ -14934,6 +14956,7 @@ define('talk',['require','jquery','jquery.serializeObject','jquery.iframe-transp
     require("bootstrap");
     require("moment");
     require("bootstrap-datetimepicker");
+    require("zh-CN");
     require("select2");
     //require("jquery.ui.sortable");
     require("parsley");
@@ -14954,7 +14977,6 @@ define('talk',['require','jquery','jquery.serializeObject','jquery.iframe-transp
     var formValidationProto = require("formValidationProto");
     var modals = require('modals');
     var SimpleUpload = require("simple-upload");
-
 
     function modifyTalk(data) {
         var request = $.post("/backend/talk/" + data.pk, data, 'json');
@@ -15016,32 +15038,65 @@ define('talk',['require','jquery','jquery.serializeObject','jquery.iframe-transp
             this.setElement($.parseHTML(TalkForm.tpl().trim())[0]);
             this.$alert = this.$("p.alert");
             this.$(".glyphicon-info-sign").tooltip();
+            this.$("[name=place]").attr({maxlength: 100});
+            this.$("[name=speaker]").attr({maxlength: 50});
+            
+            this.$("[name=wtdate]").click(function() {
+                var time = document.getElementById('id_date').value || moment();
+                $(document.getElementById('id_wtdate')).datetimepicker('setStartDate', moment(time, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:mm"));
+            });
+        },
+
+        events: {
+            'change [name=city]': 'onCityChanged',
+            'change [name=number]': 'onCapacityChanged',
+        },
+
+        onCapacityChanged: function() {
+            if(this.$("#number").is(":checked")) {
+                this.$(".group-capacity").addClass("hide");
+                this.el['capacity'].value = '';
+            }else{
+                this.$(".group-capacity").removeClass("hide");
+            }
+        },
+
+        setCapacity: function() {
+            if(this.el['capacity'].value > 0){
+                this.$("#number").prop({"checked": false});
+                this.$(".group-capacity").removeClass("hide");
+            }else{
+                this.$("#number").prop({checked: "checked"});
+                this.$(".group-capacity").addClass("hide");
+            }
         },
 
         setDate: function() {
             this.$("[name=wtdate]").attr({
                 readOnly: "true"
             });
-            this.$("[name = date]").attr({
+            this.$("[name=date]").attr({
                 readOnly: "true"
             });
-            this.$("[name = date]").datetimepicker({
+            this.$("[name=date]").datetimepicker({
                 maxView: 2,
                 minView: 0,
+                language: 'zh-CN',
                 format: 'yyyy-mm-dd hh:ii',
                 viewSelect: 'month',
                 autoclose: "true",
             });
-            this.$("[name = wtdate]").datetimepicker({
+            this.$("[name=wtdate]").datetimepicker({
                 maxView: 2,
                 minView: 0,
+                language: 'zh-CN',
                 format: 'yyyy-mm-dd hh:ii',
                 viewSelect: 'month',
                 autoclose: "true",
             });
 
-            this.$("[name = date]").datetimepicker('setStartDate', moment().format("YYYY-MM-DD HH:mm"));
-            this.$("[name = wtdate]").datetimepicker('setStartDate', moment().format("YYYY-MM-DD HH:mm"));
+            this.$("[name=date]").datetimepicker('setStartDate', moment().format("YYYY-MM-DD HH:mm"));
+            this.$("[name=wtdate]").datetimepicker('setStartDate', moment().format("YYYY-MM-DD HH:mm"));
         },
 
         setTalk: function(talk) {
@@ -15049,8 +15104,13 @@ define('talk',['require','jquery','jquery.serializeObject','jquery.iframe-transp
                 this.el[attr].value = talk[attr];
             }, this));
 
+            if(this.el['capacity'].value == 0){
+                this.setCapacity();
+                this.el['capacity'].value = '';
+            }
+                
             var tempTime1 = moment(talk['date'], "MMM DD,YYYY,h:m a");
-            this.el['date'].value = tempTime1.format("YYYY - MM - DD HH: mm");
+            this.el['date'].value = tempTime1.format("YYYY-MM-DD HH:mm");
             var tempTime = moment(talk['wtdate'], "MMM DD,YYYY,h:m a");
             this.el['wtdate'].value = tempTime.format("YYYY-MM-DD HH:mm");
         },
@@ -15069,39 +15129,83 @@ define('talk',['require','jquery','jquery.serializeObject','jquery.iframe-transp
             }, this));
         },
 
-        onCityChanged: function() {
-            this.$("[name=university]").select2({
-                query: function(query) {
-                    var data = {
-                        results: []
-                    };
-                    for (var i = 0; i < selectUni.length; i++) {
-                        if (selectUni[i].city == document.getElementById('id_city').value) {
-                            data.results.push(selectUni[i]);
+        initCU: function() {
+            this.$("[name=city]").select2({
+                data: selectCity,
+                formatNoMatches: '没有相关信息',
+                initSelection: function(element, callback) {
+                    if(element.val() == ""){
+                        var data = {id: selectCity[0].id, text: selectCity[0].name};
+                    }else{
+                        for (var i = 0; i < selectCity.length; i++){
+                            if(selectCity[i].id == element.val()){
+                                var data = {id: element.val(), text: selectCity[i].name};
+                                break;
+                            }
                         }
                     }
-                    query.callback(data);
+                    callback(data);
+                }
+            });
+            this.$("[name=university]").select2({
+                query: function(query) {
+                    var uni = {
+                        results: []
+                    };
+                    if(document.getElementById('id_city').value === "") {
+                        document.getElementById('id_city').value = '1';
+                    }
+                    for (var i = 0; i < selectUni.length; i++) {
+                        if (selectUni[i].city == document.getElementById('id_city').value && (selectUni[i].name.indexOf(query.term) != -1)) {
+                            uni.results.push(selectUni[i]);
+                        }
+                    }
+                    query.callback(uni);
+                }, 
+
+
+                initSelection: function(element, callback){
+                    if(element.val() == ""){
+                        var data = {id: selectUni[0].id, text: selectUni[0].name};
+                    }else{
+                        for (var i = 0; i < selectUni.length; i++){
+                            if(selectUni[i].id == element.val()){
+                                var data = {id: element.val(), text: selectUni[i].name};
+                                break;
+                            }
+                        }
+                    }
+                    callback(data);
+                },
+
+                formatNoMatches: function(term) {
+                    return '没有相关信息';
                 }
             });
         },
 
-        initSelect: function() {
-            this.$("[name=city]").select2({
-                data: selectCity,
-            });
+        onCityChanged: function(){
+            for (var i = 0; i < selectUni.length; i++){
+                if(selectUni[i].city == document.getElementById('id_city').value){
+                    var data = selectUni[i];
+                    break;
+                }
+            }
+            this.$("[name=university]").select2('data', data);
         },
 
-
         onShow: function() {
+            this.initCU();
             this.setDate();
-            this.onCityChanged();
-            this.initSelect();
+            this.setCapacity();
         },
 
         clear: function() {
             _.each(['pk', 'city', 'university', 'date', 'place', 'capacity', 'speaker', 'wtdate'], _.bind(function(field) {
                 $(this.el[field]).val('');
             }, this));
+
+            this.setCapacity();
         },
 
         onHide: function() {
@@ -15112,6 +15216,8 @@ define('talk',['require','jquery','jquery.serializeObject','jquery.iframe-transp
 
         getData: function() {
             var data = this.$el.serializeObject();
+            data['place'] = data['place'].trim();
+            data['speaker'] = data['speaker'].trim();
 
             return data;
         },
@@ -15119,28 +15225,43 @@ define('talk',['require','jquery','jquery.serializeObject','jquery.iframe-transp
         validate: function() {
             this.clearErrors(['city', 'university', 'date', 'place', 'capacity', 'speaker', 'wtdate']);
 
-            if (this.el.city.value === "") {
-                this.addError(this.el.city, 'This field is required');
-                return false;
+            if(this.el.city.value === "") {
+                this.el.city.value = '1';
             }
-            if (this.el.university.value === "") {
-                this.addError(this.el.university, 'This field is required');
-                return false;
+            if(this.el.university.value === "") {
+                this.el.university.value = '1';
             }
             if (this.el.date.value === "") {
-                this.addError(this.el.date, 'This field is required');
+                this.addError(this.el.date, '这是必填项。');
                 return false;
             }
-            if (this.el.place.value === "") {
-                this.addError(this.el.place, 'This field is required');
+            if (this.el.place.value.trim() === "") {
+                this.addError(this.el.place, '这是必填项。');
                 return false;
             }
-            if (this.el.capacity.value === "") {
-                this.addError(this.el.capacity, 'This field is required or Integer type is required');
-                return false;
+            capa = this.el.capacity.value;
+            if(this.$("#number").is(":checked")) {
+                this.el.capacity.value = 0;
+            }else{
+                if (capa === "" || parseInt(capa) != capa) {
+                    this.addError(this.el.capacity, '这是必填项/应该填入整数。');
+                    return false;
+                }
+                if(capa <= 0 ) {
+                    this.addError(this.el.capacity, '必须输入正数。');
+                    return false;
+                }
+                if(capa >= 2000) {
+                    this.addError(this.el.capacity, '座位数应该小于2000！');
+                    return false;
+                }
             }
             if (this.el.wtdate.value === "") {
-                this.addError(this.el.wtdate, 'This field is required');
+                this.addError(this.el.wtdate, '这是必填项。');
+                return false;
+            }
+            if(this.el.wtdate.value <= this.el.date.value){
+                this.addError(this.el.wtdate, '笔试时间应该在宣讲会时间之后。');
                 return false;
             }
 
@@ -15160,12 +15281,12 @@ define('talk',['require','jquery','jquery.serializeObject','jquery.iframe-transp
                 handleErrors(err,
                     _.bind(this.onAuthFailure, this),
                     _.bind(this.onCommonErrors, this),
-                    _.bind(this.onUnknowError, this)
+                    _.bind(this.onUnknownError, this)
                 );
             }, this);
 
             var onFinish = _.bind(function() {
-                this.tip('Succeed!', 'success');
+                this.tip('成功！', 'success');
                 utils.reload(500);
             }, this);
 
@@ -15195,13 +15316,13 @@ define('talk',['require','jquery','jquery.serializeObject','jquery.iframe-transp
         $create = $("#create-talk");
         $create.click(function() {
             modal.show();
-            modal.setTitle('Create Talk');
-            modal.setSaveText("Create", "Creating...");
+            modal.setTitle('创建宣讲会信息');
+            modal.setSaveText("创建", "创建中...");
         });
 
         $("table").on("click", ".edit", function() {
-            modal.setTitle('Edit Dialog');
-            modal.setSaveText("Save ", "Saving...");
+            modal.setTitle('编辑宣讲会信息');
+            modal.setSaveText("保存", "保存中...");
             var talk = $(this).parent().data();
             form.setTalk(talk);
             modal.show();
@@ -15221,9 +15342,9 @@ define('talk',['require','jquery','jquery.serializeObject','jquery.iframe-transp
                 throw err;
             });
         });
-        modal.setTitle('Delete Dialog');
-        modal.tip('Are you <b>ABSOLUTELY</b> sure?');
-        modal.setSaveText('delete', 'delete...');
+        modal.setTitle('删除宣讲会信息');
+        modal.tip('确定要删除吗？');
+        modal.setSaveText('删除', '删除中...');
         modal.on('succeed', function() {
             utils.reload(500);
         });

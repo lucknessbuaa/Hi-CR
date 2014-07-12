@@ -15,14 +15,13 @@
 <div class="container">
     <div class="btn-toolbar">
         <button class="btn btn-primary" id="create-talk">
-            <span class="glyphicon glyphicon-plus"></span>&nbsp;新增宣讲会信息
+            <span class="glyphicon glyphicon-plus"></span>&nbsp;创建宣讲会信息
         </button>
     </div>
     <div class="panel panel-default">
         <div class="panel-heading">
-            宣讲会信息
-	    
             {% include "search.html" with action="talk" value=request.GET.q href=request.path %}
+            宣讲会信息
         </div>
         <div class="panel-body">
             {% render_table table "table_template.html" %}
@@ -37,69 +36,75 @@
         {{ form.pk }}
         <p class="alert" style="display: none;"></p>
         <div class="form-group">
-            <label class="col-sm-3 required control-label" 
+            <label class="field required control-label" 
                     for="{{ form.city.id_for_label }}">
                     {{ form.city.label }}</label>
-            <div class="col-sm-9">
+            <div class="value">
                 {{ form.city }}
                 <ul class="parsley-error-list" style="display: none"></ul>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 required control-label"
+            <label class="field required control-label"
                     for="{{ form.university.id_for_label }}">
                     {{ form.university.label}}</label>
-            <div class="col-sm-9">
+            <div class="value">
                 {{ form.university }}
                 <ul class="parsley-error-list" style="diaplay: none"></ul>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 required control-label" 
+            <label class="field required control-label" 
                     for="{{ form.date.id_for_label }}">
                     {{ form.date.label }}
             </label>
-            <div class="col-sm-9">
+            <div class="value">
                 {{ form.date }}
                 <ul class="parsley-error-list" style="display: none"></ul>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 required control-label" 
+            <label class="field required control-label" 
                     for="{{ form.place.id_for_label }}">
                     {{ form.place.label }}
             </label>
-            <div class="col-sm-9">
+            <div class="value">
                 {{ form.place }}
                 <ul class="parsley-error-list" style="display: none"></ul>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 required control-label" 
+            <label class="field required control-label" 
                     for="{{ form.capacity.id_for_label }}">
                     {{ form.capacity.label }}
             </label>
-            <div class="col-sm-9">
-                {{ form.capacity }}
-                <ul class="parsley-error-list" style="display: none"></ul>
+            <div class="value">
+                <label for="id-ignore-number" class="checkbox">
+                    <input type='checkbox' name='number' id='number'>
+                    若干
+                </label>                    
+                <div class="group-capacity">
+                    {{ form.capacity }}
+                    <ul class="parsley-error-list" style="display: none"></ul>
+                </div>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label" 
+            <label class="field control-label" 
                     for="{{ form.speaker.id_for_label }}">
                     {{ form.speaker.label }}
             </label>
-            <div class="col-sm-9">
+            <div class="value">
                 {{ form.speaker }}
                 <ul class="parsley-error-list" style="display: none"></ul>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 required control-label" 
+            <label class="field required control-label" 
                     for="{{ form.wtdate.id_for_label }}">
                     {{ form.wtdate.label }}
             </label>
-            <div class="col-sm-9" >
+            <div class="value" >
                 {{ form.wtdate }}
                 <ul class="parsley-error-list" style="display: none"></ul>
             </div>
