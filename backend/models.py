@@ -1,6 +1,5 @@
 # coding: utf-8
 from django.db import models
-from base.loggers import LOGGING
 from base.models import City
 class Talk(models.Model):
     city = models.CharField(verbose_name=u'city', max_length=80)
