@@ -15,6 +15,10 @@ logger = logging.getLogger(__name__)
 @json
 def loginByJSON(request):
     return {'ret_code': RET_CODES['auth-failure']}
+<<<<<<< HEAD
+=======
+
+>>>>>>> hello/master
 @ensure_csrf_cookie
 def login(request):
     if request.method == 'GET':

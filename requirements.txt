@@ -5,3 +5,5 @@ pillow
 django-render-json
 django-tables3
 underscore.py
+
+uwsgi

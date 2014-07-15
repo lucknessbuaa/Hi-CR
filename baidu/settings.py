@@ -63,7 +63,7 @@ WSGI_APPLICATION = 'baidu.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'luck',
+        'NAME': 'HiCR',
         'USER': 'root',
         'PASSWORD': 'nameLR9969',
         'HOST': 'localhost',
@@ -95,14 +95,20 @@ STATIC_ROOT= BASE_DIR + "/_static"
 
 LOGIN_URL = '/login' 
 
+LOGIN_URL = '/login' 
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     '',
     'assets',
+<<<<<<< HEAD
     'components',
     'backend',
     'ajax_upload/static',
     'ajax_uploads',
+=======
+    'components'
+>>>>>>> hello/master
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
