@@ -8,6 +8,7 @@ class Talk(models.Model):
     university = models.ForeignKey(University,verbose_name=u'university',max_length=100)
     date = models.DateTimeField()
     place = models.CharField(verbose_name=u'place',max_length=100)
+    cover = models.CharField(verbose_name=u'地点图片',max_length=1024)
     capacity = models.IntegerField(null=True,blank=True) 
     speaker = models.CharField(verbose_name=u'speaker',max_length=100,null=True,blank=True)
     wtdate = models.DateTimeField()

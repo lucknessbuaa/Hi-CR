@@ -33,7 +33,7 @@ gulp.task('rjs', function(callback) {
 
     async.series([
         compile(["login"], "base/js"),
-        compile(["talk", "jobs"], "backend/js" )
+        compile(["talk", "jobs"], "backend/js" ),
     ], callback);
 });
 
@@ -51,3 +51,5 @@ gulp.task('less', function() {
 gulp.task('watch-less', function() {
     gulp.watch("**/*.less", ['less']);
 });
+
+

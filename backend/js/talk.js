@@ -1,22 +1,19 @@
 define(function(require) {
     require("jquery");
     require("jquery.serializeObject");
-    //require('jquery-placeholder');
     require("jquery.iframe-transport");
     require("bootstrap");
     require("moment");
     require("bootstrap-datetimepicker");
     require("zh-CN");
     require("select2");
-    //require("jquery.ui.sortable");
     require("parsley");
-    //var radiu = require('radiu');
+    require("ajax_upload");
     var csrf_token = require("django-csrf-support");
     var when = require("when/when");
     var _ = require("underscore");
     require("backbone/backbone");
 
-    //var multiline = require("multiline");
 
     var errors = require("errors");
     var utils = require("utils");
@@ -36,23 +33,6 @@ define(function(require) {
     function addTalk(data) {
         var request = $.post("/backend/talk/add", data, 'json');
         return when(request).then(mapErrors, throwNetError);
-    }
-
-    function upload(el) {
-        return when($.ajax("/backend/upload/", {
-            method: 'POST',
-            iframe: true,
-            data: {
-                csrfmiddlewaretoken: csrf_token
-            },
-            files: el,
-            processData: false,
-            dataType: 'json'
-        })).then(function(data) {
-            return mapErrors(data, function(data) {
-                return data.key;
-            });
-        }, throwNetError);
     }
 
     function deleteTalk(id) {
@@ -251,16 +231,18 @@ define(function(require) {
         },
 
         clear: function() {
-            _.each(['pk', 'city', 'university', 'date', 'place', 'capacity', 'speaker', 'wtdate'], _.bind(function(field) {
+            _.each(['pk', 'city', 'university', 'date', 'place', 'clear', 'capacity', 'speaker', 'wtdate'], _.bind(function(field) {
                 $(this.el[field]).val('');
             }, this));
 
+            $('[name=cover]').val("").trigger('change');
             this.setCapacity();
+            this.clearTip();
         },
 
         onHide: function() {
             this.clear();
-            this.clearErrors(['city', 'university', 'date', 'place', 'capacity', 'speaker', 'wtdate'])
+            this.clearErrors(['city', 'university', 'date', 'place', 'cover', 'capacity', 'speaker', 'wtdate'])
             $(this.el).parsley('destroy');
         },
 
@@ -273,7 +255,8 @@ define(function(require) {
         },
 
         validate: function() {
-            this.clearErrors(['city', 'university', 'date', 'place', 'capacity', 'speaker', 'wtdate']);
+            this.clearErrors(['city', 'university', 'date', 'place', 'cover', 'capacity', 'speaker', 'wtdate']);
+            this.clearTip();
 
             if(this.el.city.value === "") {
                 this.el.city.value = '1';
@@ -287,6 +270,10 @@ define(function(require) {
             }
             if (this.el.place.value.trim() === "") {
                 this.addError(this.el.place, '这是必填项。');
+                return false;
+            }
+            if(this.el.cover.value.trim() === ""){
+                this.addError(this.el.cover, '这是必填项。');
                 return false;
             }
             capa = this.el.capacity.value;
@@ -355,7 +342,6 @@ define(function(require) {
     }));
 
     $(function() {
-        // FIXME
         TalkForm.tpl = _.template($("#form-tpl").html());
 
         var form = new TalkForm();
@@ -370,10 +356,19 @@ define(function(require) {
             modal.setSaveText("创建", "创建中...");
         });
 
+        var hello = new AjaxUploadWidget($('[name=cover]'), {
+            changeButtonText : "修改图片",
+            removeButtonText : "删除图片",
+            onError: function(data) {
+                toast('error', '图片上传失败，请重试。');
+            }
+        });
+
         $("table").on("click", ".edit", function() {
             modal.setTitle('编辑宣讲会信息');
             modal.setSaveText("保存", "保存中...");
             var talk = $(this).parent().data();
+            $('[name=cover]').val(talk.cover).trigger('change');
             form.setTalk(talk);
             modal.show();
         });
@@ -403,4 +398,5 @@ define(function(require) {
             modal.show();
         });
     });
+
 });

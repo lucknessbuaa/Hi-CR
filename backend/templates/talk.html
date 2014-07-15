@@ -8,6 +8,7 @@
 {% block css %}
 {{ block.super }}
 <link rel="stylesheet" href="{{ STATIC_URL }}css/talk.css">
+<link href="{{ STATIC_URL }}ajax_upload/css/ajax-upload-widget.css" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
 {% block content %}
@@ -75,6 +76,16 @@
         </div>
         <div class="form-group">
             <label class="field required control-label" 
+                    for="{{ form.cover.id_for_label }}">
+                    {{ form.cover.label }}
+            </label>
+            <div class="value">
+                {{ form.cover }}
+                <ul class="parsley-error-list" style="display: none"></ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="field required control-label" 
                     for="{{ form.capacity.id_for_label }}">
                     {{ form.capacity.label }}
             </label>
@@ -116,6 +127,8 @@
 </script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/talk.js">
 </script>
+<script type="text/javascript" src="{{ STATIC_URL }}ajax_upload/js/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ajax_upload/js/ajax-upload-widget.js"></script>
 <script>
     require(["talk"]);
 </script>

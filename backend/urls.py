@@ -15,3 +15,4 @@ urlpatterns = urlpatterns + patterns('backend.jobs_views',
     url(r'^jobs/delete$','delete_jobs'),
     url(r'^jobs/(?P<id>\d+)$','edit_jobs'),
 )
+

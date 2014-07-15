@@ -6,9 +6,10 @@ from underscore import _ as us
 from django.db.models import Q
 from django import forms
 from django.core.cache import get_cache
+from django.core.urlresolvers import reverse
 from django.db import InternalError
 from django.core.exceptions import ValidationError
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_GET, require_POST
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
@@ -24,6 +25,7 @@ from base.utils import fieldAttrs, with_valid_form, RET_CODES
 from backend.models import Talk
 from backend import models
 from base.models import City, University
+from ajax_upload.widgets import AjaxClearableFileInput
 
 logger = logging.getLogger(__name__)
 
@@ -34,12 +36,11 @@ def talk(request):
     talk = Talk.objects.all()
     search = False
     if 'q' in request.GET and request.GET['q'] <> "":
-        logger.error('hello')
+        logger.error(request.GET['q'])
         talk = talk.filter(Q(speaker__contains=request.GET['q'])|\
 	Q(university__name__contains=request.GET['q'])|\
 	Q(university__city_id__name__contains=request.GET['q'])|\
-	Q(place__contains=request.GET['q'])|\
-    Q(place__contains='你 好'))
+	Q(place__contains=request.GET['q']))
         if not talk.exists() :
             search = True
     elif 'q' in request.GET and request.GET['q'] == "":
@@ -60,6 +61,7 @@ class TalkTable(tables.Table):
     university = tables.columns.Column(verbose_name='大学', empty_values=(), orderable=False)
     date = tables.columns.DateTimeColumn(verbose_name='宣讲会时间', empty_values=(), orderable=False, format='Y-m-d H:i')
     place = tables.columns.Column(verbose_name='地点', empty_values=(), orderable=False)
+    cover = tables.columns.TemplateColumn(verbose_name='地点图片', template_name='talk_cover.html', orderable=False)
     capacity = tables.columns.Column(verbose_name='座位数', empty_values=(), orderable=False)
     speaker = tables.columns.Column(verbose_name='主讲人', empty_values=(), orderable=False)
     wtdate = tables.columns.DateTimeColumn(verbose_name='笔试时间', empty_values=(), orderable=False, format='Y-m-d H:i')
@@ -74,7 +76,7 @@ class TalkTable(tables.Table):
     class Meta:
         model = Talk
         empty_text = u'没有宣讲会信息'
-        fields = ( "city", "university", "date", "place", "capacity", "speaker", "wtdate", )
+        fields = ( "city", "university", "date", "place", "cover", "capacity", "speaker", "wtdate", )
         attrs = {
             'class': 'table table-bordered table-striped'
         }
@@ -103,6 +105,7 @@ class TalkForm(forms.ModelForm):
             'parsley-required': '',
         })))
 
+
     capacity = forms.IntegerField(label=u"座位数",
         widget=forms.NumberInput(attrs=us.extend({}, fieldAttrs, {
             'parsley-required': '',
@@ -121,11 +124,17 @@ class TalkForm(forms.ModelForm):
 
         if cleaned_data["capacity"] > 2000:
             raise ValidationError('座位数应该在2000以下！')
+       
+        if cleaned_data["cover"] == "False":
+            raise ValidationError('地点图片不能为空！')
 
         return cleaned_data
 
     class Meta:
         model = Talk
+        widgets = {
+            'cover': AjaxClearableFileInput
+        }
 
 
 @require_POST
@@ -194,5 +203,4 @@ def edit_talk(request, id):
         return {'ret_code': RET_CODES["ok"]}
 
     return with_valid_form(form, _edit_talk)
-
 
