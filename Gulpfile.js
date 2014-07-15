@@ -33,11 +33,7 @@ gulp.task('rjs', function(callback) {
 
     async.series([
         compile(["login"], "base/js"),
-<<<<<<< HEAD
-        compile(["talk", "jobs"], "backend/js" ),
-=======
         compile(["talk", "jobs"], "backend/js" )
->>>>>>> hello/master
     ], callback);
 });
 

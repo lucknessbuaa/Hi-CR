@@ -114,7 +114,7 @@ def jobs(request):
     elif 'q' in request.GET and request.GET['q'] == "":
         return HttpResponseRedirect(request.path)
     table = JobsTable(jobs)
-    if (jobs.count()==0 and request.GET['q'] <> "") :
+    if jobs.count()==0 and request.GET['q'] <> "" :
         table.empty_text = u"没有搜索结果"
     RequestConfig(request, paginate={"per_page": 10}).configure(table)
     form = JobsForm()

@@ -33,13 +33,8 @@ define(function(require) {
             $submit.button('loading');
             login(user, password).then(function(authenticated) {
                 if (!authenticated) {
-<<<<<<< HEAD
                     return tip("用户名或密码不正确");
-=======
-                    return tip("账号或密码不正确");
->>>>>>> hello/master
                 }
-
                 window.location = "/welcome";
             }, function() {
                 return tip("网络异常");
