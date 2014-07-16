@@ -2,7 +2,7 @@ module.exports = {
     baseUrl: ".",
     paths: {
         // dependencies
-        'jquery': 'components/jquery/dist/jquery',
+        'jquery': 'components/jquery/dist/jquery.min',
         'radiu': 'components/radiu/radiu',
         'jquery.iframe-transport': 'components/jquery.iframe-transport/jquery.iframe-transport',
         'select2': 'components/select2/select2',
@@ -13,19 +13,18 @@ module.exports = {
         'jquery.ui.sortable': 'components/jqueryui/ui/jquery.ui.sortable',
         'when': "components/when",
         "backbone": "components/backbone",
-        'bootstrap': 'components/bootstrap/dist/js/bootstrap',
+        'bootstrap': 'components/bootstrap/dist/js/bootstrap.min',
         'bootstrap-alert': 'components/bootstrap-alert/alert',
         'jquery-placeholder': 'components/jquery-placeholder/jquery.placeholder',
-        'jquery.pnotify': 'components/pnotify/jquery.pnotify',
+        'jquery.pnotify': 'components/pnotify/jquery.pnotify.min',
         'jquery.cookie': 'components/jquery.cookie/jquery.cookie',
         'jquery.serializeObject': 'components/jQuery.serializeObject/dist/jquery.serializeObject.min',
         'django-csrf-support': 'components/django-csrf-support/index',
         'parsley': 'components/parsleyjs/parsley',
         'underscore': 'components/underscore/underscore',
-        'bootstrap-datetimepicker': "components/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker",
+        'bootstrap-datetimepicker': "components/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min",
         'zh-CN': "./components/smalot-bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN",
         'multiline': 'components/multiline/browser',
-        'ajax_upload': 'ajax_upload/static/ajax_upload/js/ajax-upload-widget',
 
         //base modules
         'codes': 'assets/js/codes',

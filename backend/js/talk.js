@@ -8,7 +8,6 @@ define(function(require) {
     require("zh-CN");
     require("select2");
     require("parsley");
-    require("ajax_upload");
     var csrf_token = require("django-csrf-support");
     var when = require("when/when");
     var _ = require("underscore");
