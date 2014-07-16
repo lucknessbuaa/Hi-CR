@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = '!&%#4cchbi=1gfv3__!o=$qt2_35ojpk=!90%9r0&4mvtq30+*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
@@ -92,6 +92,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT= BASE_DIR + "/_static"
 
 
 LOGIN_URL = '/login' 
@@ -99,8 +100,7 @@ LOGIN_URL = '/login'
 # Additional locations of static files
 STATICFILES_DIRS = (
     'assets',
-    'components',
-    'backend',
+    'components'
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.

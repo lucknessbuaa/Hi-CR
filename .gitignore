@@ -8,3 +8,5 @@ node_modules
 logs/
 *.swo
 *.swp
+*.pid
+_static
