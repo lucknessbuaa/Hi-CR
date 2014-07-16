@@ -1,14 +1,18 @@
 # coding: utf-8
 from django.db import models
-from base.models import City
+from datetime import datetime
+#from base.loggers import 
+from base.models import City, University
+
 class Talk(models.Model):
-    city = models.CharField(verbose_name=u'city', max_length=80)
-    university = models.CharField(verbose_name=u'univercity', max_length=100)
-    date = models.DateField()
-    place = models.CharField(verbose_name=u'place', max_length=100)
-    capacity = models.IntegerField() 
-    speaker = models.CharField(verbose_name=u'speaker', max_length=100)
-    wtdate = models.DateField()
+    university = models.ForeignKey(University,verbose_name=u'university',max_length=100)
+    date = models.DateTimeField()
+    place = models.CharField(verbose_name=u'place',max_length=100)
+    cover = models.CharField(verbose_name=u'地点图片',max_length=1024)
+    capacity = models.IntegerField(null=True,blank=True) 
+    speaker = models.CharField(verbose_name=u'speaker',max_length=100,null=True,blank=True)
+    wtdate = models.DateTimeField()
+
 PRODUCT = 'PR'
 TECNOLO = 'TE'
 EXPRIEN = 'EX'

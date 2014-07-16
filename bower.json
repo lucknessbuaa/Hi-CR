@@ -37,6 +37,8 @@
     "moment": "~2.6.0",
     "excanvas": "*",
     "font-awesome": "~4.1.0"
-
+  },
+  "resolutions": {
+    "jquery": ">=1.6"
   }
 }

@@ -58,8 +58,8 @@ define(function(require) {
 
         events: {
             'click .save': 'onSave',
-            'show.bs.modal': 'onShow',
-            'hide.bs.modal': 'onHide'
+            'shown.bs.modal': 'onShow',
+            'hidden.bs.modal': 'onHide'
         },
 
         setForm: function(form) {
