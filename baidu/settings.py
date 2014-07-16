@@ -26,6 +26,7 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+API_LIMIT_PER_PAGE = 10
 
 # Application definition
 
@@ -41,7 +42,10 @@ INSTALLED_APPS = (
     'backend',
     'ajax_upload',
     "django_tables2",
+    'tastypie'
 )
+
+
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
