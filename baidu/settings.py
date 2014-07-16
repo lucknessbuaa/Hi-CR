@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = '!&%#4cchbi=1gfv3__!o=$qt2_35ojpk=!90%9r0&4mvtq30+*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = True
 
@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'base',
     'backend',
+    'ajax_upload',
     "django_tables2",
     'tastypie'
 )
@@ -90,16 +91,23 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
+MEDIA_ROOT = ''
+MEDIA_URL = '/media/'
 
 STATIC_URL = '/static/'
 STATIC_ROOT= BASE_DIR + "/_static"
 
+LOGIN_URL = '/login' 
 
 LOGIN_URL = '/login' 
 
 # Additional locations of static files
 STATICFILES_DIRS = (
     'assets',
+    'components',
+    'backend',
+    'ajax_upload/static',
+    'ajax_uploads',
     'components'
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.

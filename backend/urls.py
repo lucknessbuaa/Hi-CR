@@ -12,6 +12,11 @@ v1_api.register(InternResource())
 
 urlpatterns = patterns('backend.talk_views', 
     url(r'^talk$', 'talk'),
+    url(r'^talk/add$', 'add_talk'),
+    url(r'^talk/delete$', 'delete_talk'),
+    url(r'^talk/requireUni$', 'requireUni'),
+    url(r'^talk/requireCity$', 'requireCity'),
+    url(r'^talk/(?P<id>\d+)$', 'edit_talk'),
 )
 
 urlpatterns = urlpatterns + patterns('backend.jobs_views',
@@ -21,3 +26,4 @@ urlpatterns = urlpatterns + patterns('backend.jobs_views',
     url(r'^jobs/(?P<id>\d+)$','edit_jobs'),
     url(r'^api/',include(v1_api.urls)),
 )
+

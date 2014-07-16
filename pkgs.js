@@ -23,6 +23,7 @@ module.exports = {
         'parsley': 'components/parsleyjs/parsley',
         'underscore': 'components/underscore/underscore',
         'bootstrap-datetimepicker': "components/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min",
+        'zh-CN': "./components/smalot-bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN",
         'multiline': 'components/multiline/browser',
 
         //base modules
