@@ -7,3 +7,4 @@ django-tables3
 underscore.py
 
 uwsgi
+tastypie
