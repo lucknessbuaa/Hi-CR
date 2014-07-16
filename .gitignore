@@ -5,6 +5,9 @@ node_modules
 
 *.log
 *.pyc
+logs/
+*.swo
+*.swp
 *.pid
 _static
 logs

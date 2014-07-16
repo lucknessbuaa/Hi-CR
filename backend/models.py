@@ -43,4 +43,10 @@ class Jobs(models.Model):
     examplace = models.ForeignKey(City,related_name="笔面试地点", verbose_name=u'笔面试地点')
     workdesc = models.TextField(verbose_name=u'工作职责', max_length=500, null=True, blank=True)
     jobdesc = models.TextField(verbose_name=u'职位要求', max_length=500, null=True, blank=True)
-    condition = models.TextField(verbose_name=u'优先条件', max_length=500, null=True, blank= True) 
+    condition = models.TextField(verbose_name=u'优先条件', max_length=500, null=True, blank= True)
+    
+#class Commend(models.Model):
+#    mail_a = models.CharField(verbose_name=u'推荐人邮箱',max_length=50)
+#    mail_b = models.CharField(verbose_name=u'邮箱',max_length=50)
+#    name = models.CharField(verbose_name=u'姓名',max_length=50)    
+#    school = models.CharField(verbose_name=u'高校',max_length=50) 
