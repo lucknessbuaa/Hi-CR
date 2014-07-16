@@ -13325,6 +13325,7 @@ define('talk',['require','jquery','jquery.serializeObject','jquery.iframe-transp
             
             this.$("[name=wtdate]").click(function() {
                 var time = document.getElementById('id_date').value || moment();
+                $(document.getElementById('id_wtdate')).val(moment(time, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:mm")).trigger('change');
                 $(document.getElementById('id_wtdate')).datetimepicker('setStartDate', moment(time, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:mm"));
             });
         },
