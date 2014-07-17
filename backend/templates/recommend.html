@@ -1,0 +1,32 @@
+{% extends "scaffold.html" %}
+{% load django_tables2 %}
+
+{% block title %}
+推荐信息 – 百度校招
+{% endblock %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/recommend.css">
+{% endblock %}
+
+{% block content %}
+{% include "navbar.html" with tab=request.nav.active_tab %}
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            推荐信息
+            <a id="export-csv" class="btn btn-default btn-xs pull-right" 
+                href="recommend/csv?{{ request.META.QUERY_STRING }}" 
+                target="_blank">
+                Export CSV
+            </a>
+        </div>
+        <div class="panel-body">
+            {% render_table table "table_template.html" %}
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{{ STATIC_URL }}requirejs/require.js">
+</script>
+{% endblock %}
