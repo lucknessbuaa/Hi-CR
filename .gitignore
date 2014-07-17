@@ -11,3 +11,4 @@ logs/
 *.pid
 _static
 logs
+ajax_uploads/
