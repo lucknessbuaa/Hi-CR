@@ -9,6 +9,8 @@ v1_api.register(RegionResource())
 v1_api.register(PlaceResource())
 v1_api.register(JobsResource())
 v1_api.register(InternResource())
+v1_api.register(TalkResource())
+v1_api.register(UniversityResource())
 
 urlpatterns = patterns('backend.talk_views', 
     url(r'^talk$', 'talk'),
