@@ -71,11 +71,10 @@ class RecommendTable(tables.Table):
 def csv(request):
     logs = Recommends.objects.all();
     
-    logs = [['职位ID', '职位名称', '工作地点', '招聘人数', '工作类型', '职位要求','工作职责', '优先条件', '推荐人姓名', '推荐人邮箱', '被推荐人姓名', '被推荐人邮箱', '被推荐人大学', '被推荐人专业', '推荐理由', '推荐日期']] + map(lambda log: [
+    logs = [['职位ID', '职位名称', '工作地点', '工作类型', '职位要求','工作职责', '优先条件', '推荐人姓名', '推荐人邮箱', '被推荐人姓名', '被推荐人邮箱', '被推荐人电话','被推荐人大学', '被推荐人专业', '推荐理由', '推荐日期']] + map(lambda log: [
         log.jobId,
         log.jobName.encode('utf-8'),
         log.jobPlace.encode('utf-8'),
-        log.jobNumber,
         log.jobType.encode('utf-8'),
         log.jobDesc.encode('utf-8'),
         log.workDesc.encode('utf-8'),
@@ -84,6 +83,7 @@ def csv(request):
         log.mailA.encode('utf-8'),
         log.name.encode('utf-8'),
         log.mail.encode('utf-8'),
+        log.tel,
         log.school.encode('utf-8'),
         log.specialty.encode('utf-8'),
         log.reason.encode('utf-8'),

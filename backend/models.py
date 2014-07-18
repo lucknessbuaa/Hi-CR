@@ -53,10 +53,9 @@ class Jobs(models.Model):
     
 class Recommends(models.Model):
     jobId = models.IntegerField(verbose_name=u'职位ID')
-    jobName = models.CharField(verbose_name=u'职位名称', max_length=50)
-    jobPlace = models.CharField(verbose_name=u'工作地点', max_length=50)
-    jobNumber = models.IntegerField(verbose_name=u'招聘人数')
-    jobType = models.CharField(verbose_name=u'工作类型', max_length=10)
+    jobName = models.CharField(verbose_name=u'职位名称', max_length=50,null=True, blank=True)
+    jobPlace = models.CharField(verbose_name=u'工作地点', max_length=50,null=True, blank=True)
+    jobType = models.CharField(verbose_name=u'工作类型', max_length=10,null=True, blank=True)
     jobDesc = models.TextField(verbose_name=u'职位要求', max_length=500, null=True, blank=True)
     workDesc = models.TextField(verbose_name=u'工作职责', max_length=500, null=True, blank=True)
     condition = models.TextField(verbose_name=u'优先条件', max_length=500, null=True, blank= True)
@@ -64,6 +63,7 @@ class Recommends(models.Model):
     mailA = models.EmailField(verbose_name=u'推荐人邮箱', max_length=75)
     name = models.CharField(verbose_name=u'被推荐人姓名', max_length=50)
     mail = models.EmailField(verbose_name=u'被推荐人邮箱', max_length=75)
+    tel = models.CharField(verbose_name=u'被推荐人电话', max_length=20)
     school = models.TextField(verbose_name=u'被推荐人大学', max_length=100)
     specialty = models.TextField(verbose_name=u'被推荐人专业', max_length=100)
     reason = models.TextField(verbose_name=u'推荐理由', max_length=500)
