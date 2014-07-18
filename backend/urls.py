@@ -29,3 +29,9 @@ urlpatterns = urlpatterns + patterns('backend.jobs_views',
     url(r'^api/',include(v1_api.urls)),
 )
 
+urlpatterns = urlpatterns + patterns('backend.recommend_views',
+    url(r'^recommend$','recommend'),
+    url(r'^recommend/csv$', 'csv'),
+)
+
+
