@@ -30,6 +30,7 @@ class JobsResource(ModelResource):
         queryset = Jobs.objects.filter(judge = 0)
         resource_name = 'jobs'
         allowed_methods = ['get']
+        excludes = ['judge']
         filtering = {
             'id': ALL_WITH_RELATIONS,
             'name' : ALL_WITH_RELATIONS,
@@ -37,7 +38,8 @@ class JobsResource(ModelResource):
             'type' : ALL
         }
     def dehydrate(self,bundle):
-        bundle.data['city_id'] = bundle.obj.place_id  
+        bundle.data['city_id'] = bundle.obj.place_id
+        bundle.data['city_name'] = bundle.obj.place.name  
         return bundle
 
 class InternResource(ModelResource):
@@ -47,6 +49,7 @@ class InternResource(ModelResource):
         queryset = Jobs.objects.filter(judge = 1)
         resource_name = 'intern' 
         allowed_methods = ['get']
+        excludes = ['judge']
         filtering = { 
             'id': ALL_WITH_RELATIONS,
             'name' : ALL_WITH_RELATIONS,
@@ -55,6 +58,7 @@ class InternResource(ModelResource):
         } 
     def dehydrate(self,bundle):
         bundle.data['city_id'] = bundle.obj.place_id  
+        bundle.data['city_name'] = bundle.obj.place.name
         return bundle
 
 class UniversityResource(ModelResource):
@@ -65,36 +69,38 @@ class UniversityResource(ModelResource):
         allowed_methods = ['get']
 
 class TalkResource(ModelResource):
-    university = fields.ForeignKey(UniversityResource,'university')
     class Meta:
         queryset = Talk.objects.all()
         resource_name = 'talk'
         allowed_methods = ['get']
+        excludes = ['place','university']
         filtering = { 
             'id':ALL,
             'date': ALL
         }
     def dehydrate(self,bundle):
-        bundle.data['city_id'] = bundle.obj.university.city_id 
+        bundle.data['place_id'] = bundle.obj.university.city_id 
+        bundle.data['place_name'] = bundle.obj.university.city
         bundle.data['university_id'] = bundle.obj.university.id
+        bundle.data['university_name'] = bundle.obj.university
+        bundle.data['location'] = bundle.obj.place
         return bundle
     def get_object_list(self,request):
         now = datetime.now()
-        week = now - timedelta(days=7)
-        mouth = now - timedelta(days=30)
+        week = now + timedelta(days=7)
+        mouth = now + timedelta(days=30)
         temp = super(TalkResource,self).get_object_list(request)
         logger.debug(temp)
-        if 'city_id' in request.GET:
-            return temp.filter(university_id__city_id=request.GET['city_id'])
-        else :  
-            if 'week' in request.GET:
-                logger.debug(date)
-                return temp.filter(date__range=(week,now))
+        if 'place' in request.GET:
+            temp=temp.filter(university_id__city_id=request.GET['place']) 
+        if 'week' in request.GET:
+            temp=temp.filter(date__range=(now,week))
+        else :
+            if 'month' in request.GET:
+                temp=temp.filter(date__range=(now,mouth))
             else :
-                if 'mouth' in request.GET:
-                    return temp.filter(date__range=(mouth,now))
+                if 'finish' in request.GET:
+                    temp=temp.filter(date__lte=now)
                 else :
-                    if 'finish' in request.GET:
-                        return temp.filter(date__lte=now)
-                    else :
-                        return temp.all()
+                    temp=temp.all()
+        return temp
