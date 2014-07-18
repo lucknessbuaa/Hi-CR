@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^ajax-upload/', include('ajax_upload.urls')),
 
     url(r'^backend/', include('backend.urls')),
+    url(r'^api','backend.views.ajax_add')
     # url(r'^$', 'baidu.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
