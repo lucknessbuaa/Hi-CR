@@ -61,7 +61,8 @@ class RecommendTable(tables.Table):
         model = Recommends
         empty_text = u'没有推荐信息'
         orderable=False
-        exclude=('pk', 'id')
+        fields = ('id','jobName','jobPlace','jobType','nameA','mailA','name','mail','date')
+        exclude=('pk','jobId','jobDesc','workDesc','condition')
         attrs = {
             'class': 'table table-bordered table-striped'
         }
@@ -71,25 +72,25 @@ class RecommendTable(tables.Table):
 def csv(request):
     logs = Recommends.objects.all();
     
-    logs = [['职位ID', '职位名称', '工作地点', '工作类型', '职位要求','工作职责', '优先条件', '推荐人姓名', '推荐人邮箱', '被推荐人姓名', '被推荐人邮箱', '被推荐人电话','被推荐人大学', '被推荐人专业', '推荐理由', '推荐日期']] + map(lambda log: [
+    logs = [[u'职位ID', u'职位名称', u'工作地点', u'工作类型', u'职位要求',u'工作职责', u'优先条件', u'推荐人姓名', u'推荐人邮箱', u'被推荐人姓名', u'被推荐人邮箱', u'被推荐人电话',u'被推荐人大学', u'被推荐人专业', u'推荐理由', u'推荐日期']] + map(lambda log: [
         log.jobId,
-        log.jobName.encode('utf-8'),
-        log.jobPlace.encode('utf-8'),
-        log.jobType.encode('utf-8'),
-        log.jobDesc.encode('utf-8'),
-        log.workDesc.encode('utf-8'),
-        log.condition.encode('utf-8'),
-        log.nameA.encode('utf-8'),
-        log.mailA.encode('utf-8'),
-        log.name.encode('utf-8'),
-        log.mail.encode('utf-8'),
+        log.jobName,
+        log.jobPlace,
+        log.jobType,
+        log.jobDesc,
+        log.workDesc,
+        log.condition,
+        log.nameA,
+        log.mailA,
+        log.name,
+        log.mail,
         log.tel,
-        log.school.encode('utf-8'),
-        log.specialty.encode('utf-8'),
-        log.reason.encode('utf-8'),
+        log.school,
+        log.specialty,
+        log.reason,
         log.date,
     ], logs)
 
-    filename = u"hello.csv"
+    filename = u"output.csv"
     logger.debug("filename: " + filename)
     return render_csv(logs, filename=filename.encode('utf-8'))
