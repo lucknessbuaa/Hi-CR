@@ -73,7 +73,7 @@ class TalkResource(ModelResource):
         queryset = Talk.objects.all()
         resource_name = 'talk'
         allowed_methods = ['get']
-        excludes = ['place','university']
+        excludes = ['place','university','cover']
         filtering = { 
             'id':ALL,
             'date': ALL
@@ -84,13 +84,13 @@ class TalkResource(ModelResource):
         bundle.data['university_id'] = bundle.obj.university.id
         bundle.data['university_name'] = bundle.obj.university
         bundle.data['location'] = bundle.obj.place
+        bundle.data['url_picture'] ='hicr.limijiaoyin.com/media/'+ bundle.obj.cover
         return bundle
     def get_object_list(self,request):
         now = datetime.now()
         week = now + timedelta(days=7)
         mouth = now + timedelta(days=30)
         temp = super(TalkResource,self).get_object_list(request)
-        logger.debug(temp)
         if 'place' in request.GET:
             temp=temp.filter(university_id__city_id=request.GET['place']) 
         if 'week' in request.GET:
