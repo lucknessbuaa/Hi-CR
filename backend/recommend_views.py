@@ -19,7 +19,7 @@ import django_tables2 as tables
 from django_tables2 import RequestConfig
 from django_render_json import json
 from django.http import HttpResponseRedirect
-from django_render_csv import render_csv
+from django_render_csv import render_csv, as_csv
 
 from base.decorators import active_tab
 from base.utils import fieldAttrs, with_valid_form, RET_CODES
@@ -71,12 +71,12 @@ class RecommendTable(tables.Table):
 def csv(request):
     logs = Recommends.objects.all();
     
-    logs = [['职位ID', '职位名称', '工作地点', '招聘人数', '工作类型', '职位要求','工作职责', '优先条件', '推荐人姓名', '推荐人邮箱', '被推荐人姓名', '被推荐人邮箱', '被推荐人大学', '被推荐人专业', '推荐理由', '推荐日期']] + map(lambda log: [
+    logs = [['\u4E43职位ID', u'职位名称', '工作地点', '招聘人数', '工作类型', '职位要求','工作职责', '优先条件', '推荐人姓名', '推荐人邮箱', '被推荐人姓名', '被推荐人邮箱', '被推荐人大学', '被推荐人专业', '推荐理由', '推荐日期']] + map(lambda log: [
         log.jobId,
         log.jobName.encode('utf-8'),
         log.jobPlace.encode('utf-8'),
         log.jobNumber,
-        log.jobType.encode('utf-8'),
+        log.jobType,
         log.jobDesc.encode('utf-8'),
         log.workDesc.encode('utf-8'),
         log.condition.encode('utf-8'),
