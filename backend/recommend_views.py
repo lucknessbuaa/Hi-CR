@@ -19,7 +19,7 @@ import django_tables2 as tables
 from django_tables2 import RequestConfig
 from django_render_json import json
 from django.http import HttpResponseRedirect
-from django_render_csv import render_csv
+from django_render_csv import render_csv, as_csv
 
 from base.decorators import active_tab
 from base.utils import fieldAttrs, with_valid_form, RET_CODES
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 @login_required
 @active_tab('recommend')
 def recommend(request):
-    recommend = Recommends.objects.all()
+    recommend = Recommends.objects.all().order_by('-pk')
     search = False
     if 'q' in request.GET and request.GET['q'] <> "":
         logger.error(request.GET['q'])
@@ -60,7 +60,7 @@ class RecommendTable(tables.Table):
     class Meta:
         model = Recommends
         empty_text = u'没有推荐信息'
-        orderable=False
+        orderable = False
         fields = ('id','jobName','jobPlace','jobType','nameA','mailA','name','mail','date')
         exclude=('pk','jobId','jobDesc','workDesc','condition')
         attrs = {
@@ -71,7 +71,6 @@ class RecommendTable(tables.Table):
 @require_GET
 def csv(request):
     logs = Recommends.objects.all();
-    
     logs = [[u'职位ID', u'职位名称', u'工作地点', u'工作类型', u'职位要求',u'工作职责', u'优先条件', u'推荐人姓名', u'推荐人邮箱', u'被推荐人姓名', u'被推荐人邮箱', u'被推荐人电话',u'被推荐人大学', u'被推荐人专业', u'推荐理由', u'推荐日期']] + map(lambda log: [
         log.jobId,
         log.jobName,

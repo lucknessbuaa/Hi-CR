@@ -83,6 +83,8 @@ class TalkResource(ModelResource):
         bundle.data['place_name'] = bundle.obj.university.city
         bundle.data['university_id'] = bundle.obj.university.id
         bundle.data['university_name'] = bundle.obj.university
+        bundle.data['date'] = bundle.obj.date.strftime("%Y-%m-%d %H:%M:%S")
+        bundle.data['wtdate'] = bundle.obj.wtdate.strftime("%Y-%m-%d %H:%M:%S")
         bundle.data['location'] = bundle.obj.place
         bundle.data['url_picture'] ='hicr.limijiaoyin.com/media/'+ bundle.obj.cover
         return bundle
