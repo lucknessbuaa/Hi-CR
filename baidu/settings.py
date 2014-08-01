@@ -67,7 +67,7 @@ WSGI_APPLICATION = 'baidu.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'luck',
+        'NAME': 'HiCR',
         'USER': 'root',
         'PASSWORD': 'nameLR9969',
         'HOST': 'localhost',

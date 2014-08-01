@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 @login_required
 @active_tab('recommend')
 def recommend(request):
-    recommend = Recommends.objects.all()
+    recommend = Recommends.objects.all().order_by('-pk')
     search = False
     if 'q' in request.GET and request.GET['q'] <> "":
         logger.error(request.GET['q'])
@@ -60,7 +60,7 @@ class RecommendTable(tables.Table):
     class Meta:
         model = Recommends
         empty_text = u'没有推荐信息'
-        orderable=False
+        orderable = False
         fields = ('id','jobName','jobPlace','jobType','nameA','mailA','name','mail','date')
         exclude=('pk','jobId','jobDesc','workDesc','condition')
         attrs = {
