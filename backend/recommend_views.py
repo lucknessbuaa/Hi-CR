@@ -48,7 +48,7 @@ def recommend(request):
     table = RecommendTable(recommend)
     if search :
         table = RecommendTable(recommend, empty_text='没有搜索结果')
-    RequestConfig(request, paginate={"per_page": 10}).configure(table)
+    RequestConfig(request, paginate={"per_page": 15}).configure(table)
     return render(request, "recommend.html", {
         "table": table,
     })
@@ -61,8 +61,8 @@ class RecommendTable(tables.Table):
         model = Recommends
         empty_text = u'没有推荐信息'
         orderable = False
-        fields = ('id','jobName','jobPlace','jobType','nameA','mailA','name','mail','date')
-        exclude=('pk','jobId','jobDesc','workDesc','condition')
+        fields = ('id','jobName','jobPlace','jobType','mailA','name','mail','date')
+        exclude=('pk','jobId','jobDesc','workDesc','condition','nameA')
         attrs = {
             'class': 'table table-bordered table-striped'
         }
