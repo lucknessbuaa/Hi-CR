@@ -10,4 +10,5 @@ logs/
 *.swp
 *.pid
 _static
+logs
 ajax_uploads/
