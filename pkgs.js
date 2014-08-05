@@ -39,7 +39,8 @@ module.exports = {
         // app modules
         'login': 'base/js/login',
         'talk': 'backend/js/talk',
-        'jobs': 'backend/js/jobs'
+        'jobs': 'backend/js/jobs',
+        'recommend': 'backend/js/recommend'
     },
     shim: {
         'jquery-placeholder': {
