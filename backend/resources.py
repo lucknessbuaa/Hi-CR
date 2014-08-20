@@ -107,5 +107,8 @@ class TalkResource(ModelResource):
                 if 'finish' in request.GET:
                     temp=temp.filter(date__lte=now)
                 else :
-                    temp=temp.all()
+                    if 'order' in request.GET:
+                        temp=temp.order_by('date')
+                    else :
+                        temp=temp.all()
         return temp
