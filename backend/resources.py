@@ -98,6 +98,10 @@ class TalkResource(ModelResource):
         temp = super(TalkResource,self).get_object_list(request)
         if 'place' in request.GET:
             temp=temp.filter(university_id__city_id=request.GET['place']) 
+        if 'order' in request.GET:
+            temp=temp.order_by('date')
+        if 'desc' in request.GET:
+            temp=temp.order_by('-date')
         if 'week' in request.GET:
             temp=temp.filter(date__range=(now,week))
         else :
@@ -107,8 +111,5 @@ class TalkResource(ModelResource):
                 if 'finish' in request.GET:
                     temp=temp.filter(date__lte=now)
                 else :
-                    if 'order' in request.GET:
-                        temp=temp.order_by('date')
-                    else :
-                        temp=temp.all()
+                    temp=temp.all()
         return temp
