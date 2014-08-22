@@ -8,4 +8,5 @@ underscore.py
 timestamp
 
 uwsgi
-tastypie
+django-tastypie
+

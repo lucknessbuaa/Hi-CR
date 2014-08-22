@@ -28,7 +28,7 @@ class JobsForm(forms.ModelForm):
     pk = forms.IntegerField(required=False,
             widget=forms.HiddenInput(attrs=us.extend({},fieldAttrs)))
 
-    name = forms.CharField(label=u'职位名称',max_length=20, 
+    name = forms.CharField(label=u'职位名称',max_length=50, 
             widget=forms.TextInput(attrs=us.extend({}, fieldAttrs, {
                 'parsley-required':'',
             })))
