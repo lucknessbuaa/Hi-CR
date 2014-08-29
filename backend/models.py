@@ -1,8 +1,13 @@
 # coding: utf-8
+import logging
 from django.db import models
 from datetime import datetime
-#from base.loggers import 
+
 from base.models import City, University
+
+
+logger = logging.getLogger(__name__)
+
 
 class Talk(models.Model):
     university = models.ForeignKey(University,verbose_name=u'university',max_length=100)
@@ -12,6 +17,43 @@ class Talk(models.Model):
     capacity = models.IntegerField(null=True,blank=True) 
     speaker = models.CharField(verbose_name=u'speaker',max_length=100,null=True,blank=True)
     wtdate = models.DateTimeField()
+
+    grabbing = models.BooleanField(verbose_name=u'开放抢座', default=False)
+    seats = models.IntegerField(verbose_name=u'抢座数量', default=0)
+
+    def grabbedSeats(self):
+        return TalkSeats.objects.filter(talk=self).count()
+
+
+class ConsumerManager(models.Manager):
+
+    def ensureConsumer(self, token):
+        try:
+            return self.get(token=token)
+        except:
+            consumer = Consumer(token=token)
+            consumer.save()
+            return consumer
+            
+
+class Consumer(models.Model):
+    token = models.CharField(unique=True, max_length=255)
+    gender = models.IntegerField(verbose_name=u'性别', default=1, 
+                                  choices=((1, u'男'), (2, u'女')))
+    objects = ConsumerManager()
+
+    def attention(self, jobId):
+        job = Jobs.objects.get(pk=jobId)
+        JobAttention(job=job, consumer=self).save()
+
+
+class TalkSeats(models.Model):
+    talk = models.ForeignKey(Talk)
+    consumer = models.ForeignKey(Consumer)
+
+    class Meta:
+        unique_together = ('talk', 'consumer')
+
 
 PRODUCT = 'PR'
 TECNOLO = 'TE'
@@ -44,12 +86,23 @@ class Jobs(models.Model):
     workdesc = models.TextField(verbose_name=u'工作职责', max_length=500, null=True, blank=True)
     jobdesc = models.TextField(verbose_name=u'职位要求', max_length=500, null=True, blank=True)
     condition = models.TextField(verbose_name=u'优先条件', max_length=500, null=True, blank= True)
+
+
+class JobAttention(models.Model):
+    job = models.ForeignKey(Jobs)
+    consumer = models.ForeignKey(Consumer)
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('job', 'consumer')
+
     
 #class Commend(models.Model):
 #    mail_a = models.CharField(verbose_name=u'推荐人邮箱',max_length=50)
 #    mail_b = models.CharField(verbose_name=u'邮箱',max_length=50)
 #    name = models.CharField(verbose_name=u'姓名',max_length=50)    
 #    school = models.CharField(verbose_name=u'高校',max_length=50)
+
     
 class Recommends(models.Model):
     jobId = models.IntegerField(verbose_name=u'职位ID')
@@ -68,5 +121,4 @@ class Recommends(models.Model):
     specialty = models.TextField(verbose_name=u'被推荐人专业', max_length=100)
     reason = models.TextField(verbose_name=u'推荐理由', max_length=500)
     date = models.DateField(verbose_name=u'推荐日期')
-
      

@@ -32,7 +32,7 @@ db:
 		"drop database $(database)"
 	mysql -u root --password=$(password) -e \
 		"create database $(database)"
-	$(activate_venv) && ./manage.py syncdb --noinput
+	$(activate_venv) && ./manage.py syncdb --noinput && ./manage.py load_universities
 
 
 .PHONY: debug \
