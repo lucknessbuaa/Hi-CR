@@ -29,6 +29,8 @@ from backend.models import Recommends, Consumer, JobAttention, Jobs
 from backend import models
 from base.models import City, University
 
+logger = logging.getLogger(__name__)
+
 
 class FilterForm(forms.Form):
     start = forms.DateField(label="start", input_formats=["%Y-%m-%d"], 
@@ -68,10 +70,10 @@ def attention(request):
         return redirect("/backend/attention")
 
     stop = form.cleaned_data["stop"]
-    stop = stop + timedelta(days=1)
+    _stop = stop + timedelta(days=1)
     start = form.cleaned_data["start"]
 
-    attentions = JobAttention.objects.filter(date__gte=start, date__lt=stop).order_by('-pk')
+    attentions = JobAttention.objects.filter(date__gte=start, date__lt=_stop).order_by('-pk')
     table = AttentionTable(attentions)
     RequestConfig(request, paginate={"per_page": 15}).configure(table)
     form = FilterForm({
@@ -82,6 +84,29 @@ def attention(request):
         "table": table,
         "form": form,
     })
+
+
+@require_GET
+def csv(request):
+    form = FilterForm(request.GET)
+    if not form.is_valid():
+        logger.warn("reports, form is invalid, " + str(form.errors))
+        return redirect("/backend/reports")
+    stop = form.cleaned_data["stop"]
+    _stop = stop + timedelta(days=1)
+    start = form.cleaned_data["start"]
+    data = JobAttention.objects.filter(date__gte=start, date__lt=_stop).order_by('-pk')
+
+    logs = [[u'职位ID', u'职位名称', u'用户', u'日期']] + map(lambda item: [
+        item.job.pk,
+        item.job.name,
+        item.consumer.token,
+        item.date.strftime('%Y-%m-%d %H:%M')
+    ], data)
+
+    filename = u"output.csv"
+    logger.debug("filename: " + filename)
+    return render_csv(logs, filename=filename.encode('utf-8'))
 
 
 class AttentionTable(tables.Table):
