@@ -38,20 +38,20 @@ class ConsumerManager(models.Manager):
             consumer.save()
             return consumer
 
-            
 
 class Consumer(models.Model):
     token = models.CharField(unique=True, max_length=255)
     gender = models.IntegerField(verbose_name=u'性别', default=1, 
                                   choices=((1, u'男'), (2, u'女')))
+    email = models.EmailField(verbose_name=u'邮箱')
+    name = models.CharField(verbose_name=u'姓名', max_length=50)
+    phone = models.CharField(verbose_name=u'电话号码', max_length=50)
+
     objects = ConsumerManager()
 
     def attention(self, jobId):
         job = Jobs.objects.get(pk=jobId)
         JobAttention(job=job, consumer=self).save()
-
-    def __unicode__(self):
-        return self.token
 
 
 class TalkSeats(models.Model):

@@ -91,6 +91,12 @@ def gender(request, consumer):
     return {'ret_code': 0}
 
 
+class ConsumerForm(forms.ModelForm):
+    class Meta:
+        fields = ('email', 'phone', 'name')
+        model = Consumer
+
+
 @require_POST
 @csrf_exempt
 @ensure_consumer
@@ -98,13 +104,24 @@ def gender(request, consumer):
 def grab_talk(request, consumer):
     CODE_NOT_ALLOWD = 7001
     CODE_NO_MORE_SEATS = 7002
+    CODE_DATA_INVALID = 1001
+
+    form = ConsumerForm(request.POST, instance=consumer)
+    if not form.is_valid():
+        logger.warn("form is invalid")
+        logger.warn(form.errors)
+        return {'ret_code': CODE_DATA_INVALID}
+
+    consumer = form.save()
 
     talkId = int(request.POST.get('talk'))
     talk = Talk.objects.get(pk=talkId)
     if not talk.grabbing:
         return {'ret_code': CODE_NOT_ALLOWD}
 
-    if talk.leftSeats() <= 0:
+    leftSeats = talk.leftSeats()
+    logger.debug("talk " + str(talkId) + " left seats" + str(leftSeats))
+    if leftSeats <= 0:
         return {'ret_code': CODE_NO_MORE_SEATS}
 
     TalkSeats(talk=talk, consumer=consumer).save()
