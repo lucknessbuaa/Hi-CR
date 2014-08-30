@@ -29,7 +29,6 @@ from backend.models import Recommends, Consumer, JobAttention, Jobs
 from backend import models
 from base.models import City, University
 
-logger = logging.getLogger(__name__)
 
 class FilterForm(forms.Form):
     start = forms.DateField(label="start", input_formats=["%Y-%m-%d"], 
@@ -59,62 +58,46 @@ class FilterForm(forms.Form):
         }
 
 
-def ensure_consumer(fn):
-    def wrapper(request, *args, **kwargs):
-        token = request.POST.get('token', None)
-        if not token:
-            return render_json({'ret_code': 3001})
-
-        consumer = Consumer.objects.ensureConsumer(token)
-        return fn(request, consumer, *args, **kwargs)
-
-    return wrapper
-
-
 @require_GET
-@json
-def total(request):
-    return {'ret_code': 0, 'total': Consumer.objects.all().count()}
+@login_required
+@active_tab('attention')
+def attention(request):
+    form = FilterForm(request.GET)
+    if not form.is_valid():
+        logger.warn("reports, form is invalid, " + str(form.errors))
+        return redirect("/backend/attention")
+
+    stop = form.cleaned_data["stop"]
+    stop = stop + timedelta(days=1)
+    start = form.cleaned_data["start"]
+
+    attentions = JobAttention.objects.filter(date__gte=start, date__lt=stop).order_by('-pk')
+    table = AttentionTable(attentions)
+    RequestConfig(request, paginate={"per_page": 15}).configure(table)
+    form = FilterForm({
+        'start': datetime.strftime(start, "%Y-%m-%d"),
+        'stop': datetime.strftime(stop, "%Y-%m-%d"),
+    })
+    return render(request, "attention.html", {
+        "table": table,
+        "form": form,
+    })
 
 
-@require_POST
-@csrf_exempt
-@ensure_consumer
-@json
-def gender(request, consumer):
-    gender = int(request.POST.get('gender', '0'))
-    if gender != 1 and gender != 2:
-        return {'ret_code': 1001}
+class AttentionTable(tables.Table):
+    job = tables.Column(verbose_name = u'职位')
+    consumer = tables.Column(verbose_name = u'用户')
+    date = tables.Column(verbose_name=u'时间')
 
-    consumer.gender=gender
-    consumer.save()
-    return {'ret_code': 0}
+    def render_date(self, value):
+        return value.strftime('%Y-%m-%d %H:%M') 
 
+    class Meta:
+        model = JobAttention
+        empty_text = u'没有关注记录'
+        fields = ('job', 'consumer', 'date')
+        orderable = False
+        attrs = {
+            'class': 'table table-bordered table-striped'
+        }
 
-@require_POST
-@csrf_exempt
-@ensure_consumer
-@json
-def attention(request, consumer):
-    jobId = int(request.POST.get('job'))
-    consumer.attention(jobId)
-    return {'ret_code': 0}
-
-
-@require_GET
-@json
-def attention_count(request):
-    jobId = int(request.GET.get('job'))
-    job = Jobs.objects.get(pk=jobId)
-    male = JobAttention.objects.filter(job=job, consumer__gender=1).count();
-    female = JobAttention.objects.filter(job=job, consumer__gender=2).count();
-    return {
-        'ret_code': 0,
-        'female': female,
-        'male': male
-    }
-
-
-@require_GET
-def csv(request):
-    pass

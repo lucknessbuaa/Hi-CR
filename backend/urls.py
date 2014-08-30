@@ -26,4 +26,9 @@ urlpatterns = urlpatterns + patterns('backend.recommend_views',
     url(r'^recommend/csv$', 'csv'),
 )
 
+urlpatterns = urlpatterns + patterns('backend.attention_view',
+    url(r'^attention$','attention'),
+    url(r'^attention/csv$', 'csv')
+)
+
 

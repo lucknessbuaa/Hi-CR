@@ -1,0 +1,46 @@
+{% extends "scaffold.html" %}
+{% load django_tables2 %}
+
+{% block title %}
+职位关注 – 百度校招
+{% endblock %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/recommend.css">
+{% endblock %}
+
+{% block content %}
+{% include "navbar.html" with tab=request.nav.active_tab %}
+<div class="container">
+    <form class="filter form-inline" method="GET">
+        <div class="form-group">{{ form.start }}</div>
+        <div class="form-group">&nbsp;to&nbsp;</div>
+        <div class="form-group">{{ form.stop }}</div>
+        <div class="form-group btn-danger hidden" id="alert">&nbsp;筛选截止日期应该在开始日期之后！</div>
+    </form>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            推荐信息
+            <a id="export-csv" class="btn btn-default btn-xs pull-right" 
+                href="attention/csv?{{ request.META.QUERY_STRING }}" 
+                target="_blank">
+                Export CSV
+            </a>
+        </div>
+        <div class="panel-body">
+            {% render_table table "table_template.html" %}
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{{ STATIC_URL }}requirejs/require.js">
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/recommend.js">
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/dropdown.js">
+</script>
+<script>
+    require(["recommend"]);
+</script>
+{% endblock %}

@@ -34,6 +34,7 @@ class ConsumerManager(models.Manager):
             consumer = Consumer(token=token)
             consumer.save()
             return consumer
+
             
 
 class Consumer(models.Model):
@@ -45,6 +46,9 @@ class Consumer(models.Model):
     def attention(self, jobId):
         job = Jobs.objects.get(pk=jobId)
         JobAttention(job=job, consumer=self).save()
+
+    def __unicode__(self):
+        return self.token
 
 
 class TalkSeats(models.Model):
@@ -86,6 +90,9 @@ class Jobs(models.Model):
     workdesc = models.TextField(verbose_name=u'工作职责', max_length=500, null=True, blank=True)
     jobdesc = models.TextField(verbose_name=u'职位要求', max_length=500, null=True, blank=True)
     condition = models.TextField(verbose_name=u'优先条件', max_length=500, null=True, blank= True)
+
+    def __unicode__(self):
+        return self.name
 
 
 class JobAttention(models.Model):
