@@ -24,6 +24,9 @@ class Talk(models.Model):
     def grabbedSeats(self):
         return TalkSeats.objects.filter(talk=self).count()
 
+    def leftSeats(self):
+        return self.seats - self.grabbedSeats()
+
 
 class ConsumerManager(models.Manager):
 

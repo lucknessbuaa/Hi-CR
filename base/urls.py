@@ -20,6 +20,7 @@ urlpatterns = patterns('',
 
     url(r'^backend/', include('backend.urls')),
     url(r'^API/input','backend.views.ajax_add'),
+    url(r'^API/talk/grab','backend.api_view.grab_talk'),
     url(r'^API/jobs/attention$','backend.api_view.attention'),
     url(r'^API/jobs/attention/count$','backend.api_view.attention_count'),
     url(r'^API/consumer/gender','backend.api_view.gender'),

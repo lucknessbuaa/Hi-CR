@@ -25,7 +25,7 @@ from django_render_csv import render_csv, as_csv
 
 from base.decorators import active_tab
 from base.utils import fieldAttrs, with_valid_form, RET_CODES
-from backend.models import Recommends, Consumer, JobAttention, Jobs
+from backend.models import Recommends, Consumer, JobAttention, Jobs, Talk, TalkSeats
 from backend import models
 from base.models import City, University
 
@@ -88,6 +88,26 @@ def gender(request, consumer):
 
     consumer.gender=gender
     consumer.save()
+    return {'ret_code': 0}
+
+
+@require_POST
+@csrf_exempt
+@ensure_consumer
+@json
+def grab_talk(request, consumer):
+    CODE_NOT_ALLOWD = 7001
+    CODE_NO_MORE_SEATS = 7002
+
+    talkId = int(request.POST.get('talk'))
+    talk = Talk.objects.get(pk=talkId)
+    if not talk.grabbing:
+        return {'ret_code': CODE_NOT_ALLOWD}
+
+    if talk.leftSeats() <= 0:
+        return {'ret_code': CODE_NO_MORE_SEATS}
+
+    TalkSeats(talk=talk, consumer=consumer).save()
     return {'ret_code': 0}
 
 
