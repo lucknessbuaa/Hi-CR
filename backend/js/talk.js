@@ -67,14 +67,41 @@ define(function(require) {
             this.setElement($.parseHTML(TalkForm.tpl().trim())[0]);
             this.$alert = this.$("p.alert");
             this.$(".glyphicon-info-sign").tooltip();
-            this.$("[name=place]").attr({maxlength: 100});
-            this.$("[name=speaker]").attr({maxlength: 50});
-            
+            this.$("[name=place]").attr({
+                maxlength: 100
+            });
+            this.$("[name=speaker]").attr({
+                maxlength: 50
+            });
+
+            this.$("#number").change(_.bind(this.ensureNumber, this));
+            $(this.el.grabbing).click(_.bind(this.ensureSeats, this));
+            this.ensureNumber();
+
             this.$("[name=wtdate]").click(function() {
                 var time = document.getElementById('id_date').value || moment();
                 $(document.getElementById('id_wtdate')).val(moment(time, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:mm")).trigger('change');
                 $(document.getElementById('id_wtdate')).datetimepicker('setStartDate', moment(time, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:mm"));
             });
+        },
+
+        ensureNumber: function() {
+            if (this.$("#number").prop("checked")) {
+                $(this.el.grabbing).prop("checked", false).attr('disabled', 'disabled');
+            } else {
+                $(this.el.grabbing).removeAttr('disabled');
+            }
+
+            this.ensureSeats();
+        },
+
+        ensureSeats: function() {
+            if ($(this.el.grabbing).prop("checked")) {
+                this.$el.find(".seats").show();
+            } else {
+                this.$el.find(".seats").hide();
+                this.el.seats.value = "";
+            }
         },
 
         events: {
@@ -83,20 +110,24 @@ define(function(require) {
         },
 
         onCapacityChanged: function() {
-            if(this.$("#number").is(":checked")) {
+            if (this.$("#number").is(":checked")) {
                 this.$(".group-capacity").addClass("hide");
                 this.el['capacity'].value = '';
-            }else{
+            } else {
                 this.$(".group-capacity").removeClass("hide");
             }
         },
 
         setCapacity: function() {
-            if(this.el['capacity'].value > 0){
-                this.$("#number").prop({"checked": false});
+            if (this.el.capacity.value > 0) {
+                this.$("#number").prop({
+                    "checked": false
+                });
                 this.$(".group-capacity").removeClass("hide");
-            }else{
-                this.$("#number").prop({checked: "checked"});
+            } else {
+                this.$("#number").prop({
+                    checked: "checked"
+                });
                 this.$(".group-capacity").addClass("hide");
             }
         },
@@ -130,21 +161,19 @@ define(function(require) {
         },
 
         setTalk: function(talk) {
-            _.each(['pk', 'city', 'university', 'date', 'place', 'capacity', 'speaker', 'wtdate'], _.bind(function(attr) {
+            _.each(['pk', 'city', 'university', 'date', 'place', 'capacity', 'speaker', 'wtdate', 'seats'], _.bind(function(attr) {
                 this.el[attr].value = talk[attr];
             }, this));
 
-            if(this.el['capacity'].value == 0){
-                this.setCapacity();
+            $(this.el.grabbing).prop('checked', talk.grabbing);
+
+            if (this.el['capacity'].value == 0) {
                 this.el['capacity'].value = '';
             }
-                
-            var tempTime1 = moment(talk['date'], "MMM DD,YYYY,h:m a");
-            this.el['date'].value = tempTime1.format("YYYY-MM-DD HH:mm");
-            var tempTime = moment(talk['wtdate'], "MMM DD,YYYY,h:m a");
-            this.el['wtdate'].value = tempTime.format("YYYY-MM-DD HH:mm");
-        },
+            this.setCapacity();
 
+            this.ensureNumber();
+        },
 
         bind: function(data) {
             var defaults = {
@@ -154,7 +183,7 @@ define(function(require) {
                 url: ''
             };
             data = _.defaults(data, defaults);
-            _.each(['pk', 'city', 'university', 'date', 'place', 'capacity', 'speaker', 'wtdate'], _.bind(function(attr) {
+            _.each(['pk', 'city', 'university', 'date', 'place', 'capacity', 'speaker', 'wtdate', 'seats', 'grabbing'], _.bind(function(attr) {
                 this.el[attr].value = data[attr];
             }, this));
         },
@@ -164,12 +193,18 @@ define(function(require) {
                 data: selectCity,
                 formatNoMatches: '没有相关信息',
                 initSelection: function(element, callback) {
-                    if(element.val() == ""){
-                        var data = {id: selectCity[0].id, text: selectCity[0].name};
-                    }else{
-                        for (var i = 0; i < selectCity.length; i++){
-                            if(selectCity[i].id == element.val()){
-                                var data = {id: element.val(), text: selectCity[i].name};
+                    if (element.val() == "") {
+                        var data = {
+                            id: selectCity[0].id,
+                            text: selectCity[0].name
+                        };
+                    } else {
+                        for (var i = 0; i < selectCity.length; i++) {
+                            if (selectCity[i].id == element.val()) {
+                                var data = {
+                                    id: element.val(),
+                                    text: selectCity[i].name
+                                };
                                 break;
                             }
                         }
@@ -182,7 +217,7 @@ define(function(require) {
                     var uni = {
                         results: []
                     };
-                    if(document.getElementById('id_city').value === "") {
+                    if (document.getElementById('id_city').value === "") {
                         document.getElementById('id_city').value = '1';
                     }
                     for (var i = 0; i < selectUni.length; i++) {
@@ -191,16 +226,22 @@ define(function(require) {
                         }
                     }
                     query.callback(uni);
-                }, 
+                },
 
 
-                initSelection: function(element, callback){
-                    if(element.val() == ""){
-                        var data = {id: selectUni[0].id, text: selectUni[0].name};
-                    }else{
-                        for (var i = 0; i < selectUni.length; i++){
-                            if(selectUni[i].id == element.val()){
-                                var data = {id: element.val(), text: selectUni[i].name};
+                initSelection: function(element, callback) {
+                    if (element.val() == "") {
+                        var data = {
+                            id: selectUni[0].id,
+                            text: selectUni[0].name
+                        };
+                    } else {
+                        for (var i = 0; i < selectUni.length; i++) {
+                            if (selectUni[i].id == element.val()) {
+                                var data = {
+                                    id: element.val(),
+                                    text: selectUni[i].name
+                                };
                                 break;
                             }
                         }
@@ -214,9 +255,9 @@ define(function(require) {
             });
         },
 
-        onCityChanged: function(){
-            for (var i = 0; i < selectUni.length; i++){
-                if(selectUni[i].city == document.getElementById('id_city').value){
+        onCityChanged: function() {
+            for (var i = 0; i < selectUni.length; i++) {
+                if (selectUni[i].city == document.getElementById('id_city').value) {
                     var data = selectUni[i];
                     break;
                 }
@@ -227,17 +268,18 @@ define(function(require) {
         onShow: function() {
             this.initCU();
             this.setDate();
-            this.setCapacity();
         },
 
         clear: function() {
-            _.each(['pk', 'city', 'university', 'date', 'place', 'clear', 'capacity', 'speaker', 'wtdate'], _.bind(function(field) {
+            _.each(['pk', 'city', 'university', 'date', 'place', 'clear', 'capacity', 'speaker', 'wtdate', 'seats'], _.bind(function(field) {
                 $(this.el[field]).val('');
             }, this));
 
+            $(this.el.grabbing).prop('checked', false);
             $('[name=cover]').val("").trigger('change');
             this.setCapacity();
             this.clearTip();
+            this.ensureNumber();
         },
 
         onHide: function() {
@@ -247,7 +289,11 @@ define(function(require) {
         },
 
         getData: function() {
-            var data = this.$el.serializeObject();
+            var data = _.defaults(this.$el.serializeObject(), {
+                grabbing: false,
+                seats: 0
+            });
+            data.seats = data.seats || 0;
             data['place'] = data['place'].trim();
             data['speaker'] = data['speaker'].trim();
 
@@ -255,13 +301,13 @@ define(function(require) {
         },
 
         validate: function() {
-            this.clearErrors(['city', 'university', 'date', 'place', 'cover', 'capacity', 'speaker', 'wtdate']);
+            this.clearErrors(['city', 'university', 'date', 'place', 'cover', 'capacity', 'speaker', 'wtdate', 'seats', 'grabbing']);
             this.clearTip();
 
-            if(this.el.city.value === "") {
+            if (this.el.city.value === "") {
                 this.el.city.value = '1';
             }
-            if(this.el.university.value === "") {
+            if (this.el.university.value === "") {
                 this.el.university.value = '1';
             }
             if (this.el.date.value === "") {
@@ -272,32 +318,49 @@ define(function(require) {
                 this.addError(this.el.place, '这是必填项。');
                 return false;
             }
-            if(this.el.cover.value.trim() === ""){
+            if (this.el.cover.value.trim() === "") {
                 this.addError(this.el.cover, '这是必填项。');
                 return false;
             }
             capa = this.el.capacity.value;
-            if(this.$("#number").is(":checked")) {
+            if (this.$("#number").is(":checked")) {
                 this.el.capacity.value = 0;
-            }else{
+            } else {
                 if (capa === "" || parseInt(capa) != capa) {
                     this.addError(this.el.capacity, '这是必填项/应该填入整数。');
                     return false;
                 }
-                if(capa <= 0 ) {
+                if (capa <= 0) {
                     this.addError(this.el.capacity, '必须输入正数。');
                     return false;
                 }
-                if(capa >= 2000) {
+                if (capa >= 2000) {
                     this.addError(this.el.capacity, '座位数应该小于2000！');
                     return false;
                 }
             }
+
+            if (!this.$("#number").prop("checked") && $(this.el.grabbing).prop("checked")) {
+                var seats = this.el.seats.value;
+                if (seats !== "") {
+                    if (!/^\d+$/.test(seats)) {
+                        this.addError(this.el.seats, '这是必填项/应该填入整数。');
+                        return false;
+                    }
+
+                    seats = parseInt(seats);
+                    if (seats > capa) {
+                        this.addError(this.el.seats, '占座数量不应该超过总座位数量');
+                        return false;
+                    }
+                }
+            }
+
             if (this.el.wtdate.value === "") {
                 this.addError(this.el.wtdate, '这是必填项。');
                 return false;
             }
-            if(this.el.wtdate.value <= this.el.date.value){
+            if (this.el.wtdate.value <= this.el.date.value) {
                 this.addError(this.el.wtdate, '笔试时间应该在宣讲会时间之后。');
                 return false;
             }
@@ -357,8 +420,8 @@ define(function(require) {
         });
 
         var hello = new AjaxUploadWidget($('[name=cover]'), {
-            changeButtonText : "修改图片",
-            removeButtonText : "删除图片",
+            changeButtonText: "修改图片",
+            removeButtonText: "删除图片",
             onError: function(data) {
                 toast('error', '图片上传失败，请重试。');
             }

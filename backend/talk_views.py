@@ -119,6 +119,11 @@ class TalkForm(forms.ModelForm):
     wtdate = forms.DateTimeField(label=u"笔试时间", input_formats=["%Y-%m-%d %H:%M"],
         widget=forms.TextInput(attrs={"class": "form-control"}))
 
+    seats = forms.IntegerField(label=u"占座数量",  initial=1,
+        widget=forms.TextInput(attrs=us.extend({}, fieldAttrs, {
+            'parsley-required': '',
+        })))
+
     def clean(self):
         cleaned_data = self.cleaned_data = super(TalkForm, self).clean()
 
@@ -147,11 +152,13 @@ def add_talk(request):
 
     return with_valid_form(TalkForm(request.POST), _add_talk)
 
+
 @require_POST
 @json
 def delete_talk(request):
     Talk.objects.filter(pk=request.POST["id"]).delete()
     return {'ret_code': RET_CODES['ok']}
+
 
 @require_POST
 @json

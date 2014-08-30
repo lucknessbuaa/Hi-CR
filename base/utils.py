@@ -23,6 +23,7 @@ RET_CODES = {
 def with_valid_form(form, fn):
     if not form.is_valid():
         logger.warn("invalid form")
+        logger.warn(form.errors);
         return {
             'ret_code': RET_CODES["form-invalid"],
             'form_errors': form.errors

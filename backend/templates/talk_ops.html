@@ -2,12 +2,14 @@
     data-pk="{{ record.pk }}"
     data-city="{{ record.university.city.pk }}"
     data-university="{{ record.university.pk }}"
-    data-date="{{ record.date }}"
+    data-date="{{ record.date|date:'Y-m-d H:m' }}"
     data-place="{{ record.place }}"
     data-cover="{{ MEDIA_URL }}{{ record.cover }}"
     data-capacity="{{ record.capacity}}"
     data-speaker="{{ record.speaker }}"
-    data-wtdate="{{ record.wtdate }}"
+    data-wtdate="{{ record.wtdate|date:'Y-m-d H:m' }}"
+    data-grabbing="{{ record.grabbing|lower }}"
+    data-seats="{{ record.seats }}"
     >
 
     <button class="btn btn-default edit" title="edit">

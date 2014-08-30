@@ -120,6 +120,31 @@
                 <ul class="parsley-error-list" style="display: none"></ul>
             </div>
         </div>
+
+        <div class="form-group">
+            <label class="field control-label" 
+                    for="{{ form.grabbing.id_for_label }}">
+            </label>
+
+            <div class="value">
+                <label class="checkbox">
+                    <input type='checkbox' name='grabbing'>
+                    占座
+                </label>                    
+            </div>
+        </div>
+
+        <div class="form-group seats">
+            <label class="field required control-label" 
+                    for="{{ form.seats.id_for_label }}">
+                    {{ form.seats.label }}
+            </label>
+            <div class="value" >
+                {{ form.seats }}
+                <ul class="parsley-error-list" style="display: none"></ul>
+            </div>
+        </div>
+
     </form> 
 </script>
 
