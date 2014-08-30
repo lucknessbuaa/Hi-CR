@@ -25,7 +25,7 @@ from django_render_csv import render_csv, as_csv
 
 from base.decorators import active_tab
 from base.utils import fieldAttrs, with_valid_form, RET_CODES
-from backend.models import Recommends, Consumer
+from backend.models import Recommends, Consumer, JobAttention, Jobs
 from backend import models
 from base.models import City, University
 
@@ -61,7 +61,7 @@ class FilterForm(forms.Form):
 @require_GET
 @login_required
 @active_tab('attention')
-def attention(request):
+def attention_tab(request):
     form = FilterForm(request.GET)
     if not form.is_valid():
         logger.warn("reports, form is invalid, " + str(form.errors))
@@ -127,19 +127,29 @@ def gender(request, consumer):
     return {'ret_code': 0}
 
 
-
 @require_POST
 @csrf_exempt
 @ensure_consumer
 @json
-def gender(request, consumer):
-    gender = int(request.POST.get('gender', '0'))
-    if gender != 1 and gender != 2:
-        return {'ret_code': 1001}
-
-    consumer.gender=gender
-    consumer.save()
+def attention(request, consumer):
+    jobId = int(request.POST.get('job'))
+    job = Jobs.objects.get(pk=jobId)
+    JobAttention(job=job, consumer=consumer).save()
     return {'ret_code': 0}
+
+
+@require_GET
+@json
+def attention_count(request):
+    jobId = int(request.GET.get('job'))
+    job = Jobs.objects.get(pk=jobId)
+    male = JobAttention.objects.filter(job=job, consumer__gender=1).count();
+    female = JobAttention.objects.filter(job=job, consumer__gender=2).count();
+    return {
+        'ret_code': 0,
+        'female': female,
+        'male': male
+    }
 
 
 @require_GET
