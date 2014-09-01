@@ -97,10 +97,13 @@ def csv(request):
     start = form.cleaned_data["start"]
     data = JobAttention.objects.filter(date__gte=start, date__lt=_stop).order_by('-pk')
 
-    logs = [[u'职位ID', u'职位名称', u'用户', u'日期']] + map(lambda item: [
+    logs = [[u'职位ID', u'职位名称', u'用户ID', u'用户姓名', u'用户手机', u'用户邮箱', u'日期']] + map(lambda item: [
         item.job.pk,
         item.job.name,
         item.consumer.token,
+        item.consumer.name,
+        item.consumer.phone,
+        item.consumer.email,
         item.date.strftime('%Y-%m-%d %H:%M')
     ], data)
 
@@ -110,17 +113,40 @@ def csv(request):
 
 
 class AttentionTable(tables.Table):
-    job = tables.Column(verbose_name = u'职位')
-    consumer = tables.Column(verbose_name = u'用户')
-    date = tables.Column(verbose_name=u'时间')
+    job = tables.Column(verbose_name = u'职位ID', empty_values=())
+    job_name = tables.Column(verbose_name = u'职位名称', empty_values=())
+    token = tables.Column(verbose_name = u'用户ID', empty_values=())
+    consumer = tables.Column(verbose_name = u'用户姓名', empty_values=())
+    phone = tables.Column(verbose_name = u'用户手机', empty_values=())
+    email = tables.Column(verbose_name = u'用户邮箱', empty_values=())
+    date = tables.Column(verbose_name=u'时间', empty_values=())
+
+    def render_job(self, value):
+        return value.pk
+
+    def render_job_name(self, record):
+        return record.job.name
 
     def render_date(self, value):
         return value.strftime('%Y-%m-%d %H:%M') 
+
+    def render_consumer(self, value):
+        return value.name
+
+    def render_token(self, record):
+        return record.consumer.token
+
+    def render_phone(self, record):
+        return record.consumer.phone
+
+    def render_email(self, record):
+        return record.consumer.email
 
     class Meta:
         model = JobAttention
         empty_text = u'没有关注记录'
         fields = ('job', 'consumer', 'date')
+        sequence=('job', 'job_name', 'token', 'consumer', 'phone', 'email', 'date')
         orderable = False
         attrs = {
             'class': 'table table-bordered table-striped'
