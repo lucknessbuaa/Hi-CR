@@ -8,6 +8,7 @@ from tastypie.api import Api
 urlpatterns = patterns('backend.talk_views', 
     url(r'^talk$', 'talk'),
     url(r'^talk/add$', 'add_talk'),
+    url(r'^talk/csv$', 'export_csv'),
     url(r'^talk/delete$', 'delete_talk'),
     url(r'^talk/requireUni$', 'requireUni'),
     url(r'^talk/requireCity$', 'requireCity'),

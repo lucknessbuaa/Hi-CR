@@ -8672,3 +8672,6 @@ td.cover {
 .ajax-upload {
   padding-top: 5px;
 }
+td.ops {
+  width: 120px;
+}

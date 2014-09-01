@@ -18,11 +18,12 @@ from django.utils.safestring import mark_safe
 import django_tables2 as tables
 from django_tables2 import RequestConfig
 from django_render_json import json
+from django_render_csv import as_csv
 from django.http import HttpResponseRedirect
 
 from base.decorators import active_tab
 from base.utils import fieldAttrs, with_valid_form, RET_CODES
-from backend.models import Talk
+from backend.models import Talk, TalkSeats
 from backend import models
 from base.models import City, University
 from ajax_upload.widgets import AjaxClearableFileInput
@@ -57,6 +58,7 @@ def talk(request):
 
 
 class TalkTable(tables.Table):
+    pk = tables.columns.Column(verbose_name='ID')
     city = tables.columns.Column(verbose_name='城市', empty_values=(), orderable=False, accessor='university.city')
     university = tables.columns.Column(verbose_name='大学', empty_values=(), orderable=False)
     date = tables.columns.DateTimeColumn(verbose_name='宣讲会时间', empty_values=(), orderable=False, format='Y-m-d H:i')
@@ -76,7 +78,7 @@ class TalkTable(tables.Table):
     class Meta:
         model = Talk
         empty_text = u'没有宣讲会信息'
-        fields = ( "city", "university", "date", "place", "cover", "capacity", "speaker", "wtdate", )
+        fields = ("pk", "city", "university", "date", "place", "cover", "capacity", "speaker", "wtdate", )
         attrs = {
             'class': 'table table-bordered table-striped'
         }
@@ -210,4 +212,29 @@ def edit_talk(request, id):
         return {'ret_code': RET_CODES["ok"]}
 
     return with_valid_form(form, _edit_talk)
+
+
+@require_GET
+@login_required
+@as_csv(filename='export.csv')
+def export_csv(request):
+    talkId = request.GET.get('id', None)
+    if not talkId:
+        return [[u'宣讲会id', u'用户姓名', u'用户邮箱', u'用户手机']]        
+
+    try:
+        talk = Talk.objects.get(pk=talkId)
+        seats = TalkSeats.objects.filter(talk=talk)
+
+        def map_seat(seat):
+            return [
+                seat.talk.pk,
+                seat.consumer.name,
+                seat.consumer.email,
+                seat.consumer.phone
+            ]
+
+        return [[u'宣讲会id', u'用户姓名', u'用户邮箱', u'用户手机']] + map(map_seat, seats)
+    except:
+        return [[u'宣讲会id', u'用户姓名', u'用户邮箱', u'用户手机']]        
 

@@ -97,10 +97,20 @@ class ConsumerForm(forms.ModelForm):
         model = Consumer
 
 
+def log_result(fn):
+    def wrapper(request, *args, **kwargs):
+        result = fn(request, *args, **kwargs)
+        logger.debug("result: " +  str(result))
+        return result
+
+    return wrapper
+
+
 @require_POST
 @csrf_exempt
 @ensure_consumer
 @json
+@log_result
 def grab_talk(request, consumer):
     CODE_NOT_ALLOWD = 7001
     CODE_NO_MORE_SEATS = 7002
@@ -126,6 +136,18 @@ def grab_talk(request, consumer):
 
     TalkSeats(talk=talk, consumer=consumer).save()
     return {'ret_code': 0}
+
+
+@require_POST
+@csrf_exempt
+@ensure_consumer
+@json
+def giveup_talk(request, consumer):
+    talkId = int(request.POST.get('talk'))
+    talk = Talk.objects.get(pk=talkId)
+    TalkSeats.objects.filter(talk=talk, consumer=consumer).delete()
+    return {'ret_code': 0}
+
 
 
 @require_POST
