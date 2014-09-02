@@ -89,7 +89,7 @@ class TalkResource(ModelResource):
 #        bundle.data['wtdate'] = bundle.obj.wtdate.strftime("%Y-%m-%d %H:%M:%S")
         bundle.data['wtdate'] = timestamp(bundle.obj.wtdate)
         bundle.data['location'] = bundle.obj.place
-        bundle.data['url_picture'] ='hicr.limijiaoyin.com/media/'+ bundle.obj.cover
+        bundle.data['url_picture'] =bundle.obj.cover
         return bundle
     def get_object_list(self,request):
         now = datetime.now()
