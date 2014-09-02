@@ -10,3 +10,6 @@ timestamp
 uwsgi
 django-tastypie
 django-render-csv
+django-upload-path-generator
+
+pybcs

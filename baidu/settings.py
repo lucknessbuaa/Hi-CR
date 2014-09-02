@@ -101,6 +101,11 @@ LOGIN_URL = '/login'
 
 LOGIN_URL = '/login' 
 
+BCS_HOST = 'bcs.duapp.com'
+BCS_AK = 'RW7UlBba4WCo1OSLOSyx6flf'
+BCS_SK = 'LL7ICloAdq14mj7UGMWXVSCmkdY5hYQ8'
+BCS_BUCKET = 'baidu-hicr'
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     'assets',
