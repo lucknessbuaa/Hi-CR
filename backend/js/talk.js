@@ -78,11 +78,11 @@ define(function(require) {
             $(this.el.grabbing).click(_.bind(this.ensureSeats, this));
             this.ensureNumber();
 
-            this.$("[name=wtdate]").click(function() {
-                var time = document.getElementById('id_date').value || moment();
-                $(document.getElementById('id_wtdate')).val(moment(time, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:mm")).trigger('change');
-                $(document.getElementById('id_wtdate')).datetimepicker('setStartDate', moment(time, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:mm"));
-            });
+            //this.$("[name=wtdate]").click(function() {
+            //    var time = document.getElementById('id_date').value || moment();
+            //    $(document.getElementById('id_wtdate')).val(moment(time, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:mm")).trigger('change');
+            //    $(document.getElementById('id_wtdate')).datetimepicker('setStartDate', moment(time, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:mm"));
+            //});
         },
 
         ensureNumber: function() {
@@ -156,8 +156,8 @@ define(function(require) {
                 autoclose: "true",
             });
 
-            this.$("[name=date]").datetimepicker('setStartDate', moment().format("YYYY-MM-DD HH:mm"));
-            this.$("[name=wtdate]").datetimepicker('setStartDate', moment().format("YYYY-MM-DD HH:mm"));
+            //this.$("[name=date]").datetimepicker('setStartDate', moment().format("YYYY-MM-DD HH:mm"));
+            //this.$("[name=wtdate]").datetimepicker('setStartDate', moment().format("YYYY-MM-DD HH:mm"));
         },
 
         setTalk: function(talk) {
@@ -360,10 +360,10 @@ define(function(require) {
                 this.addError(this.el.wtdate, '这是必填项。');
                 return false;
             }
-            if (this.el.wtdate.value <= this.el.date.value) {
-                this.addError(this.el.wtdate, '笔试时间应该在宣讲会时间之后。');
-                return false;
-            }
+            //if (this.el.wtdate.value <= this.el.date.value) {
+            //    this.addError(this.el.wtdate, '笔试时间应该在宣讲会时间之后。');
+            //    return false;
+            //}
 
             return true;
         },

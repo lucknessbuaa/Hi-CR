@@ -2,7 +2,7 @@ module.exports = {
     baseUrl: ".",
     paths: {
         // dependencies
-        'jquery': 'components/jquery/jquery.min',
+        'jquery': 'components/jquery/dist/jquery.min',
         'radiu': 'components/radiu/radiu',
         'jquery.iframe-transport': 'components/jquery.iframe-transport/jquery.iframe-transport',
         'select2': 'components/select2/select2',
